@@ -1,0 +1,109 @@
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Day Off</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+</head>
+<body>
+<div class="container">
+    <div class="center title">
+        <h1>Day Off System</h1>
+        <h2>รานการคำขอลางานของฉัน</h2>
+    </div>
+
+    {% if user.is_authenticated %}
+        <div class="">
+            <table class="table">
+                <tr>
+                    <th>ประเภท</th>
+                    <th>สาเหตุ</th>
+                    <th>ตั้งแต่วันที่</th>
+                    <th>ถึงวันที่</th>
+                    <th>สถานะ</th>
+                </tr>
+                {% for dayoff in dayoff_list %}
+                    <tr>
+                        <td>
+                            {% if dayoff.type == '01' %}
+                                ลากิจ
+                            {% elif dayoff.type == '02' %}
+                                ลาป่วย
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ dayoff.reason }}
+                        </td>
+                        <td>
+                            {{ dayoff.date_start }}
+                        </td>
+                        <td>
+                            {{ dayoff.date_end }}
+                        </td>
+                        <td>
+                            {% if dayoff.approve_status == 0 %}
+                                <span class="badge badge-danger">ไม่อนุมัติ</span>
+                            {% elif dayoff.approve_status == 1 %}
+                                <span class="badge badge-success">อนุมัติ</span>
+                            {% elif dayoff.approve_status == 2 %}
+                                <span class="badge badge-secondary">รอการอนุมัติ</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-primary center narrow">
+            กรุณาเข้าสู่ระบบเพื่อดูรายการคำขอลางาน.
+        </div>
+    {% endif %}
+
+    <div class="center">
+        <p class="text-muted">
+            {% if user.is_authenticated %}
+                <br>Logged in as {{ user.get_username }}
+            {% endif %}
+        </p>
+
+        <!-- Create New Day Off -->
+{#        https://docs.djangoproject.com/en/dev/ref/contrib/admin/#reversing-admin-urls#}
+        {% if perms.dayoff.change_dayoff %}
+            <a href="{% url 'admin:dayoff_dayoff_changelist' %}"
+            ><button class="btn btn-secondary">Manager Panel</button></a
+            >
+        {% endif %}
+
+        <!-- Create New Day Off -->
+        {% if perms.dayoff.add_dayoff %}
+            <a href="{% url 'create-dayoff' %}"
+            ><button class="btn btn-success">Request Day Off</button></a
+            >
+        {% endif %}
+
+        <!-- Login/Logout Button -->
+        {% if not user.is_authenticated %}
+            <a href="{% url 'login' %}"
+            ><button class="btn btn-success">Login</button></a
+            >
+        {% else %}
+            <a href="{% url 'logout' %}"
+            ><button class="btn btn-danger">Logout</button></a
+            >
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .center {
+        text-align: center;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+</body>
+</html>
