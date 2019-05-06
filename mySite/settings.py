@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'polls',
     'goodgames'
 ]
 
@@ -81,7 +80,10 @@ DATABASES = {
         'USER': 'web_prj',
         'PASSWORD': 'web_prj',
         'HOST': '203.170.145.173',
-        'PORT': '3306'
+        'PORT': '3306',
+        'OPTIONS': {
+            "init_command": "SET foreign_key_checks = 0;",
+        },
     }
 }
 poll = 1
