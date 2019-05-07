@@ -1,11 +1,12 @@
 from django.contrib.auth import authenticate, login, logout
+from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
 
 # Create your views here.
-from goodgames.forms import RegistrationForm, UserAdminCreationForm
+from goodgames.forms import RegistrationForm, UserAdminCreationForm, CreateTeamForm
 from django.contrib import messages
 
-from goodgames.models import Tournament, Team
+from goodgames.models import Tournament, Team, Match
 
 
 def index(request):
@@ -20,7 +21,7 @@ def register(request):
         if form.is_valid():
             print('true')
             form.save()
-            # return redirect('index')
+            return redirect('login')
 
     return render(request, 'goodgames/register.html', context)
 
@@ -146,3 +147,77 @@ def team_info(request, team_id):
         context['lose'] = None
 
     return render(request, 'goodgames/team.html', context)
+
+
+def match_team(request, team_id):
+    context = {}
+    query = '''
+            SELECT j.id, c.description as type, tm.name as tour_name, t.team_id as my_team_id, 
+            g.name as my_team, m.team_id as enemy_team_id, k.name as enemy_team, 
+            j.winner_id, j.loser_id, j.start_date, j.end_date
+            FROM goodgames_match_team t
+            JOIN goodgames_match_team m
+            ON t.match_id = m.match_id
+            JOIN goodgames_match j
+            ON j.id = t.match_id
+            JOIN goodgames_team g
+            ON g.id = t.team_id
+            JOIN goodgames_team k
+            ON k.id = m.team_id
+            JOIN goodgames_tournament tm
+            ON tm.id = j.tournament_id
+            JOIN goodgames_categories c
+            ON c.id = tm.categories_id
+            WHERE t.team_id != m.team_id
+            AND t.team_id = %d
+            ''' % team_id
+    try:
+        context['matchs'] = Match.objects.raw(query)
+    except:
+        context['matchs'] = None
+    return render(request, 'goodgames/match.html', context)
+
+
+def create_team(request):
+
+    if request.method == 'POST':
+        form = CreateTeamForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            team = Team.objects.get(name=form.data['name'])
+            return redirect('team_info', team.id)
+    else:
+        form = CreateTeamForm()
+    context = {'form': form}
+    return render(request, 'goodgames/createteam.html', context)
+
+def team(request):
+    context = {}
+    try:
+        cmd = Team.objects.all()
+        context['teams'] = cmd
+
+    except:
+        context['teams'] = None
+    return render(request, 'goodgames/allteam.html', context)
+
+def ranking(request):
+    context = {}
+
+    query = '''
+        SELECT team.id, t.name as 'TournamentName', team.name as 'TeamName', COUNT(winner_id) as 'Wins'
+        from goodgames_match m 
+        JOIN goodgames_tournament t
+        on m.tournament_id = t.id 
+        JOIN goodgames_team team 
+        on winner_id = team.id 
+        GROUP by tournament_id, winner_id
+        '''
+    try:
+        rank = Tournament.objects.raw(query)
+        context['tournaments'] = Tournament.objects.filter(name__in=[f.TournamentName for f in rank])
+        context['ranks'] = rank
+    except:
+        context['ranks'] = None
+        context['tournaments'] = None
+    return render(request, 'goodgames/ranking.html', context)

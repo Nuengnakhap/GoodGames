@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Material Design Bootstrap</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'goodgames/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="{% static 'goodgames/css/mdb.min.css' %}" rel="stylesheet">
+    <!-- Your custom styles (optional) -->
+    <link href="{% static 'goodgames/css/style.css' %}" rel="stylesheet">
+
+
+</head>
+<body class="page-template page-template-page-teams page-template-page-teams-php page page-id-18 wp-custom-logo woocommerce-js is-inner-page">
+<nav class="mb-1 navbar navbar-expand-lg navbar-dark secondary-color1 lighten-1">
+    <a class="navbar-brand" href="#">GorillaBC E-Sport</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-555"
+            aria-controls="navbarSupportedContent-555" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent-555">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'index' %}">Home
+                    <span class="sr-only">(current)</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'tournament' %}">Tournament</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'ranking' %}">Ranking</a>
+            </li>
+
+        </ul>
+        <ul class="navbar-nav ml-auto nav-flex-icons">
+            <!--<li class="nav-item">
+              <a class="nav-link waves-effect waves-light">1
+                <i class="fas fa-envelope"></i>
+              </a>
+            </li>-->
+            <!--Register -->
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a href="{% url 'register' %}" class="nav-link">Register</a>
+                </li>
+                <!--login -->
+                <li class="nav-item">
+                    <a href="{% url 'login' %}" class="nav-link">Login</a>
+                </li>
+            {% endif %}
+
+            <li class="nav-item avatar dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-55" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    <img style="width: 30%" src="https://mdbootstrap.com/img/Photos/Avatars/avatar-2.jpg"
+                         class="rounded-circle z-depth-0"
+                         alt="avatar image">
+                </a>
+                {% if user.is_authenticated %}
+                    <div class="dropdown-menu dropdown-menu-right dropdown-secondary"
+                         aria-labelledby="navbarDropdownMenuLink-55">
+                        <a class="dropdown-item" href="{% url 'create_team' %}">Create Team</a>
+                        <a class="dropdown-item" href="{% url 'team' %}">Join Team</a>
+                        <a class="dropdown-item" href="#">ManagePlayerInformation</a>
+                        <a class="dropdown-item" href="#">ManageTeamInformation</a>
+                        <a class="dropdown-item" href="#">NoticeResultCompetition</a>
+                    </div>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+</nav>
+<section class="page-hero">
+    <div class="container">
+        <h2>Welcome to our Teams</h2>
+        <h4>Here you can find all of the teams that we have</h4>
+    </div>
+</section>
+<section class="teams page-bg">
+    <div class="j-container">
+        <div class="inner-page-header">
+        </div>
+
+
+        <div class="tab-content">
+            <div class="team-list active" style="display: flex !important;">
+                {% for team in teams %}
+                    <div class="team-box">
+                        <div class="team-body">
+                            <h3>
+                                <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/team/team-flawed-bot">
+                                    {{ team.name }} </a>
+                            </h3>
+                            <ul class="members">
+                                <li>
+                                    <a href="">
+                                        <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/img.jpg"
+                                             alt="ultramenix">
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="">
+                                        <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/player_852.jpg"
+                                             alt="stamenix">
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="">
+                                        <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/player_89.jpg"
+                                             alt="george">
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="">
+                                        <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/player_9111.jpg"
+                                             alt="m89s">
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="team-foot">
+                            <div class="col">
+                                <h5>From</h5>
+                                <p>Thailand</p>
+                            </div>
+
+                            <div class="col align-right">
+                                <a href="{% url 'team_info' team.id %}"
+                                   class="btn-default">
+                                    Team page <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript" src="{% static 'goodgames/js/jquery-3.4.0.min.js' %}"></script>
+<!-- Bootstrap tooltips -->
+<script type="text/javascript" src="{% static 'goodgames/js/popper.min.js' %}"></script>
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="{% static 'goodgames/js/bootstrap.min.js' %}"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="{% static 'goodgames/js/mdb.min.js' %}"></script>
+</body>
+</html>

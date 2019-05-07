@@ -6,6 +6,40 @@ from django import forms
 from goodgames.models import Player, Team
 
 
+class CreateTeamForm(forms.ModelForm):
+    class Meta:
+        model = Team
+        fields = [
+            'name',
+            'short_name',
+            'picture',
+            'phone',
+            'description',
+        ]
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'input100', 'placeholder': 'Enter Your Team name'}),
+            'short_name': forms.TextInput(attrs={'class': 'input100', 'placeholder': 'Enter Your Team short name'}),
+            'picture': forms.FileInput(attrs={'class': 'custom-file-input', 'placeholder': 'Enter Your Team Logo', 'type': 'file'}),
+            'phone': forms.TextInput(attrs={'class': 'input100', 'placeholder': 'Enter Your Team Phone'}),
+            'description': forms.Textarea(attrs={'class': 'input100', 'placeholder': 'Enter Your Team Descriptions'}),
+        }
+
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        qs = Team.objects.filter(name=name)
+        if qs.exists():
+            raise forms.ValidationError("team name is taken")
+        return name
+
+    def clean_short_name(self):
+        name = self.cleaned_data['short_name']
+        qs = Team.objects.filter(short_name=name)
+        if qs.exists():
+            raise forms.ValidationError("team short name is taken")
+        return name
+
+
+
 class RegistrationForm(forms.ModelForm):
     pass_field = forms.TextInput(attrs={'class': 'input100', 'placeholder': 'Enter Your Password', 'type': 'password'})
     password1 = forms.CharField(widget=pass_field)
@@ -27,8 +61,8 @@ class RegistrationForm(forms.ModelForm):
         widgets = {
             'username': forms.TextInput(attrs={'class': 'input100', 'placeholder': 'Enter Your Username'}),
             'email': forms.EmailInput(attrs={'class': 'input100', 'placeholder': 'Enter Your Email'}),
-            'firstName': forms.EmailInput(attrs={'class': 'input100', 'placeholder': 'Enter Your First Name'}),
-            'lastName': forms.EmailInput(attrs={'class': 'input100', 'placeholder': 'Enter Your Last Name'}),
+            'firstName': forms.TextInput(attrs={'class': 'input100', 'placeholder': 'Enter Your First Name'}),
+            'lastName': forms.TextInput(attrs={'class': 'input100', 'placeholder': 'Enter Your Last Name'}),
             'sex': forms.Select(attrs={'class': 'js-select2'}),
             'birthday': forms.DateInput(attrs={'class': 'input100', 'type': 'date'}),
             'phone1': forms.NumberInput(attrs={'class': 'input100', 'placeholder': 'Enter Your Phone'}),

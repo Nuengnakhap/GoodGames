@@ -24,7 +24,7 @@ SECRET_KEY = 'ol=)d!b&gycpd$wbgf8fp#g=96ebmhisswk%^y793m8!!pds+w'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -148,3 +148,6 @@ STATICFILES_DIRS = [
 ]
 
 LOGIN_URL = '/polls/login'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

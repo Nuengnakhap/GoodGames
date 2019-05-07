@@ -18,8 +18,7 @@
   <!-- Your custom styles (optional) -->
   <link href="{% static 'goodgames/css/style.css' %}" rel="stylesheet">
 
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+{#  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">#}
   <link href="{% static 'goodgames/css1/bootstrap.min.css' %}" rel="stylesheet">
   <!-- Material Design Bootstrap -->
   <link href="{% static 'goodgames/css1/mdb.min.css' %}" rel="stylesheet">
@@ -76,9 +75,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
     integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
   </script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
-  </script>
+{#  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"#}
+{#    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">#}
+{#  </script>#}
 
 </head>
 
@@ -87,64 +86,66 @@
   <nav class="mb-1 navbar navbar-expand-lg navbar-dark secondary-color1 lighten-1">
     <a class="navbar-brand" href="#">GorillaBC E-Sport</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-555"
-      aria-controls="navbarSupportedContent-555" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+            aria-controls="navbarSupportedContent-555" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent-555">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="index.html">Home
-            <span class="sr-only">(current)</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="tournament.html">Tournament</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="team.html">Team</a>
-        </li>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Ranking</a>
-      </li>
-      </ul>
-      <ul class="navbar-nav ml-auto nav-flex-icons">
-        <!--<li class="nav-item">
-        <a class="nav-link waves-effect waves-light">1
-          <i class="fas fa-envelope"></i>
-        </a>
-      </li>-->
-        <!--Register -->
-        <li class="nav-item">
-          <a href="register.html" class="nav-link">Register</a>
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'index' %}">Home
+                    <span class="sr-only">(current)</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'tournament' %}">Tournament</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'ranking' %}">Ranking</a>
+            </li>
 
-        </li>
-        <!--login -->
-        <li class="nav-item">
-          <a href="login.html" class="nav-link">Login</a>
+        </ul>
+        <ul class="navbar-nav ml-auto nav-flex-icons">
+            <!--<li class="nav-item">
+              <a class="nav-link waves-effect waves-light">1
+                <i class="fas fa-envelope"></i>
+              </a>
+            </li>-->
+            <!--Register -->
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a href="{% url 'register' %}" class="nav-link">Register</a>
+                </li>
+                <!--login -->
+                <li class="nav-item">
+                    <a href="{% url 'login' %}" class="nav-link">Login</a>
+                </li>
+            {% endif %}
 
-        </li>
-
-        <li class="nav-item avatar dropdown">
-          <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-55" data-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false">
-            <img style="width: 30%" src="https://mdbootstrap.com/img/Photos/Avatars/avatar-2.jpg"
-              class="rounded-circle z-depth-0" alt="avatar image">
-          </a>
-          <div class="dropdown-menu dropdown-menu-right dropdown-secondary" aria-labelledby="navbarDropdownMenuLink-55">
-            <a class="dropdown-item" href="createteam.html">Create Team</a>
-            <a class="dropdown-item" href="#">Join Team</a>
-            <a class="dropdown-item" href="match.html">Show Schedule</a>
-            <a class="dropdown-item" href="#">ManagePlayerInformation</a>
-            <a class="dropdown-item" href="#">ManageTeamInformation</a>
-            <a class="dropdown-item" href="#">NoticeResultCompetition</a>
-            <a class="dropdown-item" href="#">Logout</a>
-
-          </div>
-        </li>
-      </ul>
+            <li class="nav-item avatar dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-55" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    <img style="width: 30%" src="https://mdbootstrap.com/img/Photos/Avatars/avatar-2.jpg"
+                         class="rounded-circle z-depth-0"
+                         alt="avatar image">
+                </a>
+                {% if user.is_authenticated %}
+                    <div class="dropdown-menu dropdown-menu-right dropdown-secondary"
+                         aria-labelledby="navbarDropdownMenuLink-55">
+                        <a class="dropdown-item" href="{% url 'create_team' %}">Create Team</a>
+                        <a class="dropdown-item" href="{% url 'team' %}">Join Team</a>
+                        <a class="dropdown-item" href="#">ManagePlayerInformation</a>
+                        <a class="dropdown-item" href="#">ManageTeamInformation</a>
+                        <a class="dropdown-item" href="#">NoticeResultCompetition</a>
+                    </div>
+                {% endif %}
+            </li>
+        </ul>
     </div>
-  </nav>
+</nav>
   <!--/.Navbar -->
   <!-- Start your project here-->
   <!-- Full Page Intro -->

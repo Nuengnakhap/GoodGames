@@ -1,3 +1,6 @@
+import os
+from uuid import uuid4
+
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin, UserManager
 from django.db import models
@@ -50,10 +53,27 @@ class Tournament(models.Model):
         return self.name
 
 
+def path_and_rename(path):
+    def wrapper(instance, filename):
+        ext = filename.split('.')[-1]
+        name = "%s" % (instance.short_name,)
+        # get filename
+        if instance.pk:
+            filename = '{}.{}'.format(name, ext)
+        else:
+            # set filename as random string
+            random_id = "rid_%s" % (uuid4().hex,)
+            filename = '{}.{}'.format(name, ext)
+            # return the whole path to the file
+        return os.path.join(path, filename)
+
+    return wrapper
+
+
 class Team(models.Model):
     name = models.CharField(max_length=100, unique=True)
     short_name = models.CharField(max_length=100, unique=True)
-    picture = models.CharField(max_length=100)
+    picture = models.FileField(upload_to=path_and_rename('media'))
     phone = models.CharField(max_length=10)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

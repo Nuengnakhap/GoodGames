@@ -86,108 +86,55 @@
 <!-- Start your project here-->
 
 
-<section class="tournaments" style="margin-top: -5px;">
+<section class="matches" style="margin-top: -5px;">
     <div class="container">
-        <div class="section-header border-bottom">
+        <div class="section-header center-column col-white">
             <div class="section-title">
-                <h2>Tournaments</h2>
+                <h2>Tournament Rankings</h2>
+                <span>This is live update of tournament's rankings</span>
             </div>
-
-            <ul>
-                <li class="active">
-                    <a href="#upcoming-tournament" data-toggle="tab">
-                        Upcoming </a>
-                </li>
-
-            </ul>
         </div>
-
         <div class="tab-content">
-            <ul id="upcoming-tournament" class="tournament-list active">
-                {% for tournament in tournament_list %}
-                    <li class="tournament-box"
-                        style=
-                                {% if tournament.categories.description == 'Fortnite' %}
-                                    "background-image: url('http://themes.pixiesquad.com/pixiefreak/vicious-champions/wp-content/uploads/2018/11/thumb_02.jpg')"
-                                {% elif tournament.categories.description == 'Call of Duty: WWII' %}
-                                    "background-image:
-                                    url('http://themes.pixiesquad.com/pixiefreak/vicious-champions/wp-content/uploads/2018/11/thumb_03.jpg')"
-                                {% elif tournament.categories.description == 'Counter-Strike: Global Offensive' %}
-                                    "background-image:
-                                    url('http://themes.pixiesquad.com/pixiefreak/vicious-champions/wp-content/uploads/2018/11/thumb_01.jpg')"
-                                {% endif %}
-                    >
+            <ul class="match-list active" id="upcoming-match">
 
-                    <!-- Details about Tournament-->
-                    <div class="tournament-body">
-
-                        <!-- Tournament Name -->
-                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/tournament/manila-masters-toronto-4v4"
-                           class="tournament-name">
-                            {{ tournament.TournamentName }} </a>
-
-
-                        <!-- Tournament Date -->
-                        <span class="date">{{ tournament.start_date }} - {{ tournament.end_date }}</span>
-
-                        <!-- Game Logo -->
-                        <figure>
-                            {% if tournament.categories.description == 'Fortnite' %}
-                                <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/test.png"
-                                     alt="Fortnite">
-                            {% elif tournament.categories.description == 'Call of Duty: WWII' %}
-                                <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/csgo_logo.png"
-                                     alt="Counter-Strike: Global Offensive">
-                            {% elif tournament.categories.description == 'Counter-Strike: Global Offensive' %}
-                                <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/ww2logo.png"
-                                     alt="Call of Duty WW2">
-                            {% endif %}
-                        </figure>
-                    </div>
-
-                    <div class="tournament-footer">
-                        <div class="col">
-                            <div class="col-item">
-
-                                <p>{{ tournament.Team_Join }} Teams</p>
-                            </div>
-                            <div class="col-item">
-                                <h5>PLAYOUT</h5>
-                                <p>ROUND ROBIN</p>
-                            </div>
-                            <div class="col-item">
-                                <h5>Prize pool</h5>
-                                <p>
-                                <div class="styled-select slate" style="margin: 0px">
-                                    <select>
-                                        {% for key, value in prize.items %}
-                                            {% if key == tournament.id %}
-                                                {% for item in value %}
-                                                    <option>{{ item }}</option>
-                                                {% endfor %}
+                {% for tournament in tournaments %}
+                    <li class="match-box">
+                        <div class="box-title">
+                            <span>{{ tournament.name }}</span>
+                            <span class="date"></span>
+                        </div>
+                        <div class="match-details">
+                            <div class="table">
+                                <div class="table-cell">
+                                    <ul class="leader">
+                                        <div id="decoration"></div>
+                                        <div id="decoration2"></div>
+                                        <div id="decoration3"></div>
+                                        {% for rank in ranks %}
+                                            {% if rank.TournamentName == tournament.name %}
+                                                <li class="ranking-li">
+                                                    <img style="margin-left: 20px" class="ranking-img" src="https://lh6.googleusercontent.com/-566ZpvrYxRo/AAAAAAAAAAI/AAAAAAAAAAA/kZk-O1q__A0/s128-c-k/photo.jpg"/>
+                                                    <h2 class="ranking">{{ rank.TeamName|truncatechars:20 }}<span class="number">Wins : {{ rank.Wins }}</span>
+                                                    </h2>
+                                                </li>
                                             {% endif %}
                                         {% endfor %}
-                                    </select>
+
+
+                                    </ul>
                                 </div>
-                                </p>
                             </div>
                         </div>
 
-                        <div class="col align-right">
-                            <a href="{% url 'tournament_info' tour_id=tournament.id %}" class="btn-default">
-                                More details <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-
+                        <span class="game-name"></span>
                     </li>
                 {% endfor %}
             </ul>
 
         </div>
     </div>
-</section>
 
+</section>
 
 <!-- Default form login -->
 
