@@ -1,12 +1,12 @@
-import os
-from uuid import uuid4
 
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
-from django.contrib.auth.models import PermissionsMixin, UserManager
+from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 
 
 # Create your models here.
+from goodgames.components import path_and_rename, path_and_rename_match
+
 SEX = (
         ('01', 'Male'),
         ('02', 'Female')
@@ -53,29 +53,12 @@ class Tournament(models.Model):
         return self.name
 
 
-def path_and_rename(path):
-    def wrapper(instance, filename):
-        ext = filename.split('.')[-1]
-        name = "%s" % (instance.short_name,)
-        # get filename
-        if instance.pk:
-            filename = '{}.{}'.format(name, ext)
-        else:
-            # set filename as random string
-            random_id = "rid_%s" % (uuid4().hex,)
-            filename = '{}.{}'.format(name, ext)
-            # return the whole path to the file
-        return os.path.join(path, filename)
-
-    return wrapper
-
-
 class Team(models.Model):
     name = models.CharField(max_length=100, unique=True)
     short_name = models.CharField(max_length=100, unique=True)
-    picture = models.FileField(upload_to=path_and_rename('media'))
-    phone = models.CharField(max_length=10)
-    description = models.TextField()
+    picture = models.FileField(upload_to=path_and_rename('media'), null=True)
+    phone = models.CharField(max_length=10, null=True)
+    description = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -84,17 +67,26 @@ class Team(models.Model):
 
 
 class Match(models.Model):
-    score_home = models.CharField(max_length=100)
-    score_away = models.CharField(max_length=100)
+    score_home = models.CharField(max_length=100, null=True)
+    score_away = models.CharField(max_length=100, null=True)
     team = models.ManyToManyField(Team, related_name='matchs')
     start_date = models.DateField()
     end_date = models.DateField()
     tournament = models.ForeignKey(Tournament, on_delete=models.PROTECT)
     winner = models.ForeignKey(Team, null=True, on_delete=models.PROTECT, related_name='match_winner')
     loser = models.ForeignKey(Team, null=True, on_delete=models.PROTECT, related_name='match_loser')
+    picture = models.FileField(upload_to=path_and_rename_match('media'), null=True)
 
     def get_teams(self):
         return " VS ".join([p.name for p in self.team.all()])
+
+    def get_home(self):
+        team = self.team.all()
+        return team[0]
+
+    def get_away(self):
+        team = self.team.all()
+        return team[1]
 
 
 class Appointment(models.Model):
@@ -164,7 +156,8 @@ class Player(AbstractBaseUser, PermissionsMixin):
     phone1 = models.CharField(max_length=10, null=True)
     phone2 = models.CharField(max_length=10, null=True)
     province = models.CharField(max_length=100, null=True)
-    team = models.ForeignKey(Team, on_delete=models.PROTECT, null=True)
+    team = models.ForeignKey(Team, on_delete=models.PROTECT, null=True, related_name='team')
+    team_join = models.ForeignKey(Team, on_delete=models.PROTECT, null=True, related_name='team_join')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

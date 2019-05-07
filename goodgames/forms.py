@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, ReadOnlyPasswordHashFiel
 from django.core.exceptions import ValidationError
 from django import forms
 
-from goodgames.models import Player, Team
+from goodgames.models import Player, Team, Match
 
 
 class CreateTeamForm(forms.ModelForm):
@@ -136,3 +136,59 @@ class UserAdminChangeForm(forms.ModelForm):
         # This is done here, rather than on the field, because the
         # field does not have access to the initial value
         return self.initial["password"]
+
+
+class ManageTeamForm(forms.ModelForm):
+    class Meta:
+        model = Team
+        fields = [
+            'picture',
+            'phone',
+            'description',
+        ]
+        widgets = {
+            'picture': forms.FileInput(
+                attrs={'class': 'custom-file-input', 'placeholder': 'Enter Your Team Logo', 'type': 'file'}),
+            'phone': forms.TextInput(attrs={'class': 'input100', 'placeholder': 'Enter Your Team Phone'}),
+            'description': forms.Textarea(attrs={'class': 'input100', 'placeholder': 'Enter Your Team Descriptions'}),
+        }
+
+
+class ManagePlayerForm(forms.ModelForm):
+    class Meta:
+        model = Player
+        fields = [
+            'firstName',
+            'lastName',
+            'email',
+            'phone1',
+            'phone2',
+            'province',
+            'sex',
+            'birthday'
+        ]
+        widgets = {
+            'email': forms.EmailInput(attrs={'class': 'input100', 'placeholder': 'Enter Your Email'}),
+            'firstName': forms.TextInput(attrs={'class': 'input100', 'placeholder': 'Enter Your First Name'}),
+            'lastName': forms.TextInput(attrs={'class': 'input100', 'placeholder': 'Enter Your Last Name'}),
+            'sex': forms.Select(attrs={'class': 'js-select2'}),
+            'birthday': forms.DateInput(attrs={'class': 'input100', 'type': 'date'}),
+            'phone1': forms.NumberInput(attrs={'class': 'input100', 'placeholder': 'Enter Your Phone'}),
+            'phone2': forms.NumberInput(attrs={'class': 'input100', 'placeholder': 'Enter Your Phone'}),
+            'province': forms.TextInput(attrs={'class': 'input100', 'placeholder': 'Enter Your Province'}),
+        }
+
+
+class NoticeForm(forms.ModelForm):
+    class Meta:
+        model = Match
+        fields = [
+            'winner',
+            'loser',
+            'picture'
+        ]
+        widgets = {
+            'winner': forms.TextInput(attrs={'class': 'input100', 'placeholder': 'Enter Your Result', 'type': 'hidden'}),
+            'loser': forms.TextInput(attrs={'class': 'input100', 'placeholder': 'Enter Your Result', 'type': 'hidden'}),
+            'picture': forms.FileInput(attrs={'class': 'custom-file-input', 'placeholder': 'Enter Your EVIDENCE', 'type': 'file'}),
+        }

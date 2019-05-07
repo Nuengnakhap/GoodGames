@@ -18,20 +18,22 @@
     <!--===============================================================================================-->
     <link rel="icon" type="image/png" href="{% static 'goodgames/images/icons/favicon.ico' %}"/>
     <!--===============================================================================================-->
-{#    <link rel="stylesheet" type="text/css" href="{% static 'goodgames/vendor/bootstrap/css/bootstrap.min.css' %}">#}
-{#    <!--===============================================================================================-->#}
-    <link rel="stylesheet" type="text/css" href="{% static 'goodgames/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+    {#    <link rel="stylesheet" type="text/css" href="{% static 'goodgames/vendor/bootstrap/css/bootstrap.min.css' %}">#}
+    {#    <!--===============================================================================================-->#}
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'goodgames/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
     <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="{% static 'goodgames/fonts/iconic/css/material-design-iconic-font.min.css' %}">
-{#    <!--===============================================================================================-->#}
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'goodgames/fonts/iconic/css/material-design-iconic-font.min.css' %}">
+    {#    <!--===============================================================================================-->#}
     <link rel="stylesheet" type="text/css" href="{% static 'goodgames/vendor/animate/animate.css' %}">
-{#    <!--===============================================================================================-->#}
+    {#    <!--===============================================================================================-->#}
     <link rel="stylesheet" type="text/css" href="{% static 'goodgames/vendor/css-hamburgers/hamburgers.min.css' %}">
-{#    <!--===============================================================================================-->#}
+    {#    <!--===============================================================================================-->#}
     <link rel="stylesheet" type="text/css" href="{% static 'goodgames/vendor/animsition/css/animsition.min.css' %}">
-{#    <!--===============================================================================================-->#}
+    {#    <!--===============================================================================================-->#}
     <link rel="stylesheet" type="text/css" href="{% static 'goodgames/vendor/select2/select2.min.css' %}">
-{#    <!--===============================================================================================-->#}
+    {#    <!--===============================================================================================-->#}
     <link rel="stylesheet" type="text/css" href="{% static 'goodgames/vendor/daterangepicker/daterangepicker.css' %}">
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="{% static 'goodgames/vendor/noui/nouislider.min.css' %}">
@@ -39,7 +41,52 @@
     <link rel="stylesheet" type="text/css" href="{% static 'goodgames/css/util.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'goodgames/css/main.css' %}">
     <!--===============================================================================================-->
+    <style>
+        .todolist {
+            background-color: #FFF;
+            padding: 20px 20px 10px 20px;
+        }
 
+        .todolist h1 {
+            margin: 0;
+            padding-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-control {
+            border-radius: 0;
+        }
+
+        li.ui-state-default {
+            background: #fff;
+            border: none;
+            border-bottom: 1px solid #ddd;
+        }
+
+        li.ui-state-default:last-child {
+            border-bottom: none;
+        }
+
+        .todo-footer {
+            background-color: #F4FCE8;
+            margin: 0 -20px -10px -20px;
+            padding: 10px 20px;
+        }
+
+        #done-items li {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        {#text-decoration: line-through;#}
+        }
+
+        #done-items li:last-child {
+            border-bottom: none;
+        }
+
+        #checkAll {
+            margin-top: 10px;
+        }
+    </style>
 </head>
 
 <body>
@@ -110,38 +157,105 @@
 <!--/.Navbar -->
 
 <div class="container-contact100" style="    background-color: #0b0b11; margin-top: -5px;">
+
     <div class="wrap-contact100">
-        <form class="contact100-form validate-form" method="POST" action="{% url 'login' %}" onsubmit="">
+        <form class="contact100-form validate-form" method="post" enctype="multipart/form-data" action="">
             {% csrf_token %}
             <span class="contact100-form-title">
-          Login
+          Manage Your Team Information
         </span>
 
-            <div class="wrap-input100 validate-input bg1" data-validate="Please Type Your Username">
-                <span class="label-input100">Username *</span>
-                <input class="input100" type="text" name="username" placeholder="Enter Your Username">
+
+            <div class="wrap-input100 validate-input bg1">
+                <div class="input-group-prepend">
+                    <span class="label-input100">Your Logo Team</span>
+                </div>
+                <div class="custom-file">
+                    {{ form.picture }}
+                    <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                </div>
             </div>
-            <div class="wrap-input100 validate-input bg1" data-validate="Please Type Your Password">
-                <span class="label-input100">Password *</span>
-                <input class="input100" type="text" name="password" placeholder="Enter Your Password">
+
+            <div class="wrap-input100 bg1 validate-input" data-validate="Please Type Your Phone number">
+                <span class="label-input100">Phone</span>
+                {{ form.phone }}
             </div>
-            <input type="hidden" name="next_url" value="{{ next_url }}">
+
+            <div class="wrap-input100 validate-input bg0 rs1-alert-validate"
+                 data-validate="Please Type Your Description">
+                <span class="label-input100">Description Your Team</span>
+                {{ form.description }}
+            </div>
 
 
             <div class="container-contact100-form-btn">
                 <button class="contact100-form-btn" type="submit">
-            <span>
-              Login
-              <i class="fa fa-long-arrow-right m-l-7" aria-hidden="true"></i>
-            </span>
+                    <span>Save<i class="fa fa-long-arrow-right m-l-7" aria-hidden="true"></i></span>
                 </button>
+
             </div>
         </form>
+        <button class="contact100-form-btn mt-3 " type="button" data-toggle="modal" data-target="#ModalCenter">
+            <span>Edit Team Player<i class="fa fa-long-arrow-right m-l-7" aria-hidden="true"></i></span>
+        </button>
+
+        <div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="todolist">
+                            <h1>Your Team</h1>
+                            <ul id="done-items" class="list-unstyled">
+                                {% for player in players_team %}
+                                    <li>{{ player.username }}
+                                        <button type="button" class="remove-item btn btn-primary px-1 py-1 pull-right">
+                                            <i class="fas fa-trash px-1" aria-hidden="true"></i></button>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="todolist">
+                            <h1>Player want to join</h1>
+                            <ul id="sortable" class="list-unstyled">
+                                {% for player in players_join %}
+                                    <li>{{ player.username }}
+                                        <button class="remove-item btn btn-primary px-1 py-1 pull-right"><i
+                                                class="fas fa-trash px-1" aria-hidden="true"></i>
+                                        </button>
+                                        <button type="button" class="add-item btn btn-primary px-1 py-1 pull-right"><i
+                                                class="fas fa-check px-1" aria-hidden="true"></i>
+                                        </button>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <form method="post" id="playerForm">
+                        {% csrf_token %}
+                            {% for player in players_join %}
+                                <input id="{{ player }}" style="display: none" type="checkbox" name="{{ player }}" value="{{ player }}">
+                            {% endfor %}
+                            {% for player in players_team %}
+                                <input id="delete-{{ player }}" style="display: none" type="checkbox" name="delete-{{ player }}" value="{{ player }}">
+                            {% endfor %}
+                        </form>
+                        <button type="button" class="btn btn-primary" onclick="submitForm()">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-
-</div>
 </div>
 
 
@@ -151,7 +265,7 @@
 
 <!-- Default form register -->
 </div>
-</div>
+
 <!-- Site footer -->
 <footer class="site-footer">
     <div class="container">
@@ -221,13 +335,13 @@
 <!-- MDB core JavaScript -->
 <script type="text/javascript" src="{% static 'goodgames/js/mdb.min.js' %}"></script>
 <!--===============================================================================================-->
-<script src="{% static 'goodgames/vendor/jquery/jquery-3.2.1.min.js' %}"></script>
-<!--===============================================================================================-->
-<script src="{% static 'goodgames/vendor/animsition/js/animsition.min.js' %}"></script>
-<!--===============================================================================================-->
-<script src="{% static 'goodgames/vendor/bootstrap/js/popper.js' %}"></script>
+{#<script src="{% static 'goodgames/vendor/jquery/jquery-3.2.1.min.js' %}"></script>#}
+{#<!--===============================================================================================-->#}
+{#<script src="{% static 'goodgames/vendor/animsition/js/animsition.min.js' %}"></script>#}
+{#<!--===============================================================================================-->#}
+{#<script src="{% static 'goodgames/vendor/bootstrap/js/popper.js' %}"></script>#}
 {#<script src="{% static 'goodgames/vendor/bootstrap/js/bootstrap.min.js' %}"></script>#}
-<!--===============================================================================================-->
+{#<!--===============================================================================================-->#}
 <script src="{% static 'goodgames/vendor/select2/select2.min.js' %}"></script>
 <script>
     $(".js-select2").each(function () {
@@ -248,9 +362,20 @@
             });
         });
     })
+    //Document is the DOM can be accessed in the console with document.window.
+    // Tree is from the top, html, body, p etc.
+
+    //Problem: User interaction does not provide the correct results.
+    //Solution: Add interactivity so the user can manage daily tasks.
+    //Break things down into smaller steps and take each step at a time.
+
+
+    //Event handling, uder interaction is what starts the code execution.
 </script>
+
+
 <!--===============================================================================================-->
-<script src="{% static 'goodgames/vendor/daterangepicker/moment.min.j' %}s"></script>
+<script src="{% static 'goodgames/vendor/daterangepicker/moment.min.js' %}"></script>
 <script src="{% static 'goodgames/vendor/daterangepicker/daterangepicker.js' %}"></script>
 <!--===============================================================================================-->
 <script src="{% static 'goodgames/vendor/countdowntime/countdowntime.js' %}"></script>
@@ -295,7 +420,109 @@
 
     gtag('config', 'UA-23581568-13');
 </script>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+
+<script>
+    {#$("#sortable").sortable();#}
+    {#$("#sortable").disableSelection();#}
+
+    countTodos();
+
+    // all done btn
+    $("#checkAll").click(function () {
+        AllDone();
+    });
+
+    //create todo
+    $('.add-todo').on('keypress', function (e) {
+        e.preventDefault
+        if (e.which == 13) {
+            if ($(this).val() != '') {
+                var todo = $(this).val();
+                createTodo(todo);
+                countTodos();
+            } else {
+                // some validation
+            }
+        }
+    });
+    // mark task as done
+    $('.todolist').on('click', '.add-item', function () {
+        var doneItem = $(this).parent().text();
+            $(this).parent().parent().addClass('remove');
+            done(doneItem);
+            countTodos();
+            $('#'+doneItem).prop('checked', true);
+    });
+    $('.todolist').on('change', '#sortable li button[type="button"]', function () {
+        if ($(this).prop('click')) {
+            var doneItem = $(this).parent().parent().find('label').text();
+            $(this).parent().parent().parent().addClass('remove');
+            done(doneItem);
+            countTodos();
+        }
+    });
+
+    //delete done task from "already done"
+    $('.todolist').on('click', '.remove-item', function () {
+        var doneItem = $(this).parent().text();
+        $('#delete-'+doneItem).prop('checked', true);
+        removeItem(this);
+    });
+
+    // count tasks
+    function countTodos() {
+        var count = $("#sortable li").length;
+        $('.count-todos').html(count);
+    }
+
+    //create task
+    function createTodo(text) {
+        var markup = '<li class="ui-state-default"><div class="checkbox"><label><input type="checkbox" value="" />' + text + '</label></div></li>';
+        $('#sortable').append(markup);
+        $('.add-todo').val('');
+    }
+
+    //mark task as done
+    function done(doneItem) {
+        var done = doneItem;
+        var markup = '<li>' + done +
+            '<button class="remove-item btn btn-primary px-1 py-1 pull-right"><i\n' +
+            'class="fas fa-trash px-1" aria-hidden="true"></i>\n' +
+            '</button></li>';
+        $('#done-items').append(markup);
+        $('.remove').remove();
+    }
+
+    //mark all tasks as done
+    function AllDone() {
+        var myArray = [];
+
+        $('#sortable li').each(function () {
+            myArray.push($(this).text());
+        });
+
+        // add to done
+        for (i = 0; i < myArray.length; i++) {
+            $('#done-items').append('<li>' + myArray[i] + '<button class="btn btn-default btn-xs pull-right  remove-item"><span class="glyphicon glyphicon-remove"></span></button></li>');
+        }
+
+        // myArray
+        $('#sortable li').remove();
+        countTodos();
+    }
+
+    //remove done task from list
+    function removeItem(element) {
+        $(element).parent().remove();
+    }
+</script>
+<script>
+    function submitForm() {
+        document.getElementById('playerForm').submit();
+    }
+</script>
 <script>
     {% if error %}
         Swal.fire({

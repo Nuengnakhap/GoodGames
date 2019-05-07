@@ -289,12 +289,9 @@
 
         Swal.fire({
             title: 'RULE OF THE TOURNAMENT',
-            html: '<div style="text-align: left" class="scrollbar-outer">{% for row in rule %}
-                <p style="padding: 3px; font-family: Montserrat, sans-serif;">{{ row }}</p>{% endfor %}</div > ',
-        width: 600,
-            padding
-    :
-        '2em',
+            html: '<div style="text-align: left" class="scrollbar-outer">{% for row in rule %}<p style="padding: 3px; font-family: Montserrat, sans-serif;">{{ row }}</p>{% endfor %}</div > ',
+            width: 600,
+            padding:'2em',
     })
         ;
     }

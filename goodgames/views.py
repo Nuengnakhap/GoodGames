@@ -3,10 +3,11 @@ from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
 
 # Create your views here.
-from goodgames.forms import RegistrationForm, UserAdminCreationForm, CreateTeamForm
+from goodgames.forms import RegistrationForm, UserAdminCreationForm, CreateTeamForm, ManageTeamForm, ManagePlayerForm, \
+    NoticeForm
 from django.contrib import messages
 
-from goodgames.models import Tournament, Team, Match
+from goodgames.models import Tournament, Team, Match, Player
 
 
 def index(request):
@@ -41,7 +42,7 @@ def myLogin(request):
             if next_url:
                 return redirect(next_url)
             context['success'] = 'Login Success'
-            return redirect('index')
+            # return redirect('index')
         else:
             context['username'] = username
             context['password'] = password
@@ -115,6 +116,13 @@ def tournament_info(request, tour_id):
 
 def team_info(request, team_id):
     context = {}
+    current_user = request.user
+    team = Team.objects.get(id=team_id)
+    if request.method == 'POST' and current_user.id != None:
+        player = Player.objects.get(id=current_user.id)
+        player.team_join = team
+        player.save()
+
     winner = '''
             SELECT team.id, team.name as 'TeamName', COUNT(winner_id) as 'Wins'
             FROM goodgames_match m
@@ -193,6 +201,7 @@ def create_team(request):
 
 def team(request):
     context = {}
+
     try:
         cmd = Team.objects.all()
         context['teams'] = cmd
@@ -221,3 +230,94 @@ def ranking(request):
         context['ranks'] = None
         context['tournaments'] = None
     return render(request, 'goodgames/ranking.html', context)
+
+
+def manage_team(request, team_id):
+    context = {}
+    teamInfo = Team.objects.get(id=team_id)
+    if request.method == 'POST':
+        if request.FILES:
+            form = ManageTeamForm(request.POST, request.FILES, instance=teamInfo)
+            if form.is_valid():
+                form.save()
+                return redirect('team_info', team_id)
+        else:
+            form = ManageTeamForm(instance=teamInfo)
+            iterpost = iter(request.POST)
+            next(iterpost)
+            for key in iterpost:
+                value = request.POST[key]
+                player = Player.objects.get(username=value)
+                if 'delete-' in key:
+                    player.team = None
+                    player.save()
+                else:
+                    player.team = teamInfo
+                    player.team_join = None
+                    player.save()
+            return redirect('team_info', team_id)
+
+
+    else:
+        form = ManageTeamForm(instance=teamInfo)
+        try:
+            context['players_team'] = Player.objects.filter(team_id=team_id)
+            context['players_join'] = Player.objects.filter(team_join=teamInfo)
+        except:
+            context['players_team'] = None
+            context['players_join'] = None
+    context['form'] = form
+    return render(request, 'goodgames/ManageTeamInfo.html', context)
+
+
+def manage_player(request):
+    context = {}
+    current_user = request.user
+    if request.method == 'POST':
+        form = ManagePlayerForm(request.POST, instance=current_user)
+        if form.is_valid():
+            form.save()
+            context['success'] = 'Edited Your Information!'
+            # return redirect('manage_player')
+        else:
+            context['error'] = 'Cannot Edit Your Information!'
+    else:
+        form = ManagePlayerForm(instance=current_user)
+    context['form'] = form
+
+    return render(request, 'goodgames/manageplayer.html', context)
+
+
+def notice_result(request, team_id, match_id):
+    context = {}
+    match = Match.objects.get(pk=match_id)
+    home = ''
+    away = ''
+    print(team_id)
+    for team in match.team.all():
+        print(team.id)
+        if team.id == team_id:
+            home = team
+        else:
+            away = team
+    print(home.name, away.name)
+    context['match_id'] = match_id
+    context['match'] = match.get_teams()
+    if request.method == 'POST':
+        form = NoticeForm(request.POST, request.FILES, instance=match)
+
+        if form.is_valid():
+            if request.POST.get('result') == 'win':
+                form.cleaned_data['winner'] = home
+                form.cleaned_data['loser'] = away
+                print(home.name, away.name)
+            else:
+                form.cleaned_data['winner'] = away
+                form.cleaned_data['loser'] = home
+                print(home.name, away.name)
+            form.save()
+            return redirect('match_team', team_id)
+    else:
+        form = NoticeForm(instance=match)
+    context['form'] = form
+    return render(request, 'goodgames/noticeresult.html', context)

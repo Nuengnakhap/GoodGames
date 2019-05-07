@@ -24,7 +24,8 @@
 </head>
 
 <body>
-<nav class="mb-1 navbar navbar-expand-lg navbar-dark secondary-color1 lighten-1">
+<nav class="navbar navbar-expand-lg navbar-dark secondary-color1 lighten-1"
+     style="background-color: #1c2331 !important;">
     <a class="navbar-brand" href="#">GorillaBC E-Sport</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-555"
             aria-controls="navbarSupportedContent-555" aria-expanded="false" aria-label="Toggle navigation">
@@ -125,7 +126,7 @@
                         </li>
                         <li>
                             <a href="{% url 'match_team' team.0.id %}" class="btn-default">TEAM MATCHES</a>
-                            <a href="{% url 'match_team' team.0.id %}" class="btn-default">JOIN TEAM</a>
+                            <a onclick="joinTeam()" class="btn-default" style="color: white">JOIN TEAM</a>
                         </li>
                     </ul>
                 </div>
@@ -149,19 +150,22 @@
                                  style="transform: translate3d(0px, 0px, 0px); transition: all 0s ease 0s; width: 366px;">
                                 <div class="row">
                                     <div class="owl-item active" style="width: auto; margin-right: 40px;"><a
-                                            target="_blank">
-                                        <img src="http://themes.pixiesquad.com/pixiefreak/vicious-champions/wp-content/uploads/2018/11/achievement_03.png"
-                                             alt="Achievement01">
+                                        target="_blank">
+                                        <img
+                                            src="http://themes.pixiesquad.com/pixiefreak/vicious-champions/wp-content/uploads/2018/11/achievement_03.png"
+                                            alt="Achievement01">
                                     </a></div>
                                     <div class="owl-item active" style="width: auto; margin-right: 40px;"><a
-                                            target="_blank">
-                                        <img src="http://themes.pixiesquad.com/pixiefreak/vicious-champions/wp-content/uploads/2018/11/achievement_02.png"
-                                             alt="Achievement02">
+                                        target="_blank">
+                                        <img
+                                            src="http://themes.pixiesquad.com/pixiefreak/vicious-champions/wp-content/uploads/2018/11/achievement_02.png"
+                                            alt="Achievement02">
                                     </a></div>
                                     <div class="owl-item active" style="width: auto; margin-right: 40px;"><a
-                                            target="_blank">
-                                        <img src="http://themes.pixiesquad.com/pixiefreak/vicious-champions/wp-content/uploads/2018/11/achievement_01.png"
-                                             alt="Achievement03">
+                                        target="_blank">
+                                        <img
+                                            src="http://themes.pixiesquad.com/pixiefreak/vicious-champions/wp-content/uploads/2018/11/achievement_01.png"
+                                            alt="Achievement03">
                                     </a></div>
                                 </div>
                             </div>
@@ -178,14 +182,19 @@
             </article>
         </div>
     </div>
+    <form style="display: none" id="hiddenForm" method="post" onsubmit="event.preventDefault();">
+        {% csrf_token %}
+        <input type="hidden" name="user">
+    </form>
 </section>
 <div style="background-color:black;">
     <div class="container-fluid">
         <ul class="card-list active">
             <li class="card">
                 <figure>
-                    <img src="https://cdn.esportsmatrix.com/dota2/Content/images/uploaded/player/6496a3c4-31e4-42ea-91e0-fe012b034d92.png"
-                         alt="Ultramenix">
+                    <img
+                        src="https://cdn.esportsmatrix.com/dota2/Content/images/uploaded/player/6496a3c4-31e4-42ea-91e0-fe012b034d92.png"
+                        alt="Ultramenix">
                 </figure>
             </li>
             <li class="card">
@@ -221,3 +230,28 @@
 </body>
 <!-- development version, includes helpful console warnings -->
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+<script>
+    function joinTeam() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to join this team",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, join it!'
+        }).then((result) => {
+            if (result.value) {
+                document.getElementById('hiddenForm').submit();
+                Swal.fire(
+                    'Joined!',
+                    'Wait for team leader to approved.',
+                    'success'
+                )
+            }
+        })
+    }
+</script>
+</html>
+
