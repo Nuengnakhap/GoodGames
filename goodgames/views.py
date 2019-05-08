@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
+from django.contrib.auth.models import Group
 
 # Create your views here.
 from goodgames.forms import RegistrationForm, UserAdminCreationForm, CreateTeamForm, ManageTeamForm, ManagePlayerForm, \
@@ -187,17 +188,22 @@ def match_team(request, team_id):
 
 
 def create_team(request):
-
+    current_user = request.user
+    player = Player.objects.get(id=current_user.id)
+    owner = Group.objects.get(name='team_owner')
     if request.method == 'POST':
         form = CreateTeamForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             team = Team.objects.get(name=form.data['name'])
+            player.team_create = team
+            owner.user_set.add(player)
             return redirect('team_info', team.id)
     else:
         form = CreateTeamForm()
     context = {'form': form}
     return render(request, 'goodgames/createteam.html', context)
+
 
 def team(request):
     context = {}
@@ -209,6 +215,7 @@ def team(request):
     except:
         context['teams'] = None
     return render(request, 'goodgames/allteam.html', context)
+
 
 def ranking(request):
     context = {}
@@ -293,28 +300,26 @@ def notice_result(request, team_id, match_id):
     match = Match.objects.get(pk=match_id)
     home = ''
     away = ''
-    print(team_id)
     for team in match.team.all():
-        print(team.id)
         if team.id == team_id:
             home = team
         else:
             away = team
-    print(home.name, away.name)
     context['match_id'] = match_id
     context['match'] = match.get_teams()
+
     if request.method == 'POST':
         form = NoticeForm(request.POST, request.FILES, instance=match)
 
         if form.is_valid():
             if request.POST.get('result') == 'win':
-                form.cleaned_data['winner'] = home
-                form.cleaned_data['loser'] = away
-                print(home.name, away.name)
+                match.winner = home
+                match.loser = away
+                match.save()
             else:
-                form.cleaned_data['winner'] = away
-                form.cleaned_data['loser'] = home
-                print(home.name, away.name)
+                match.winner = away
+                match.loser = home
+                match.save()
             form.save()
             return redirect('match_team', team_id)
     else:

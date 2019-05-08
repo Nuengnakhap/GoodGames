@@ -127,6 +127,9 @@
                         <li>
                             <a href="{% url 'match_team' team.0.id %}" class="btn-default">TEAM MATCHES</a>
                             <a onclick="joinTeam()" class="btn-default" style="color: white">JOIN TEAM</a>
+                            {% if perms.goodgames.change_team %}
+                                <a href="{% url 'manage_team' team.0.id %}" class="btn-default">MANAGE TEAM</a>
+                            {% endif %}
                         </li>
                     </ul>
                 </div>

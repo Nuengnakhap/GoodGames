@@ -20,7 +20,7 @@
 <body>
 <!--Navbar -->
 <nav class="mb-1 navbar navbar-expand-lg navbar-dark secondary-color1 lighten-1">
-    <a class="navbar-brand" href="#">GorillaBC E-Sport</a>
+    <a class="navbar-brand" href="">GorillaBC E-Sport</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-555"
             aria-controls="navbarSupportedContent-555" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -73,9 +73,7 @@
                          aria-labelledby="navbarDropdownMenuLink-55">
                         <a class="dropdown-item" href="{% url 'create_team' %}">Create Team</a>
                         <a class="dropdown-item" href="{% url 'team' %}">Join Team</a>
-                        <a class="dropdown-item" href="#">ManagePlayerInformation</a>
-                        <a class="dropdown-item" href="#">ManageTeamInformation</a>
-                        <a class="dropdown-item" href="#">NoticeResultCompetition</a>
+                        <a class="dropdown-item" href="{% url 'manage_player' %}">ManagePlayerInformation</a>
                     </div>
                 {% endif %}
             </li>
@@ -143,6 +141,10 @@
                         </div>
 
                         <span class="game-name">{{ match.type|upper }}</span>
+                        {% if perms.goodgames.change_team %}
+                            <a href="{% url 'notice_result' match.my_team_id match.id %}" class="btn-default" style="color: white">NOTICE RESULT</a>
+                        {% endif %}
+
                     </li>
                 {% endfor %}
                 

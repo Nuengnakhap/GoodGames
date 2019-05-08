@@ -158,6 +158,7 @@ class Player(AbstractBaseUser, PermissionsMixin):
     province = models.CharField(max_length=100, null=True)
     team = models.ForeignKey(Team, on_delete=models.PROTECT, null=True, related_name='team')
     team_join = models.ForeignKey(Team, on_delete=models.PROTECT, null=True, related_name='team_join')
+    team_create = models.ForeignKey(Team, on_delete=models.PROTECT, null=True, related_name='team_create')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

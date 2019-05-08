@@ -183,12 +183,9 @@ class NoticeForm(forms.ModelForm):
     class Meta:
         model = Match
         fields = [
-            'winner',
-            'loser',
             'picture'
         ]
         widgets = {
-            'winner': forms.TextInput(attrs={'class': 'input100', 'placeholder': 'Enter Your Result', 'type': 'hidden'}),
-            'loser': forms.TextInput(attrs={'class': 'input100', 'placeholder': 'Enter Your Result', 'type': 'hidden'}),
             'picture': forms.FileInput(attrs={'class': 'custom-file-input', 'placeholder': 'Enter Your EVIDENCE', 'type': 'file'}),
         }
+
