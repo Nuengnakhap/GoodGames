@@ -26,7 +26,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark secondary-color1 lighten-1"
      style="background-color: #1c2331 !important;">
-    <a class="navbar-brand" href="#">GorillaBC E-Sport</a>
+    <a class="navbar-brand" href="">GorillaBC E-Sport</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-555"
             aria-controls="navbarSupportedContent-555" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -79,9 +79,7 @@
                          aria-labelledby="navbarDropdownMenuLink-55">
                         <a class="dropdown-item" href="{% url 'create_team' %}">Create Team</a>
                         <a class="dropdown-item" href="{% url 'team' %}">Join Team</a>
-                        <a class="dropdown-item" href="#">ManagePlayerInformation</a>
-                        <a class="dropdown-item" href="#">ManageTeamInformation</a>
-                        <a class="dropdown-item" href="#">NoticeResultCompetition</a>
+                        <a class="dropdown-item" href="{% url 'manage_player' %}">ManagePlayerInformation</a>
                     </div>
                 {% endif %}
             </li>
@@ -115,19 +113,19 @@
                 <div class="col right">
                     <ul class="info-list">
                         <li>
-                            <span class="title">{{ win.0.Wins }}</span>
+                            <span class="title">{{ win|length }}</span>
                             <span class="subtitle">
                                     Win </span>
                         </li>
                         <li>
-                            <span class="title">{{ lose.0.Loses }}</span>
+                            <span class="title">{{ lose|length }}</span>
                             <span class="subtitle">
                                     Loses </span>
                         </li>
                         <li>
                             <a href="{% url 'match_team' team.0.id %}" class="btn-default">TEAM MATCHES</a>
                             <a onclick="joinTeam()" class="btn-default" style="color: white">JOIN TEAM</a>
-                            {% if perms.goodgames.change_team %}
+                            {% if owner %}
                                 <a href="{% url 'manage_team' team.0.id %}" class="btn-default">MANAGE TEAM</a>
                             {% endif %}
                         </li>
@@ -153,22 +151,22 @@
                                  style="transform: translate3d(0px, 0px, 0px); transition: all 0s ease 0s; width: 366px;">
                                 <div class="row">
                                     <div class="owl-item active" style="width: auto; margin-right: 40px;"><a
-                                        target="_blank">
+                                            target="_blank">
                                         <img
-                                            src="http://themes.pixiesquad.com/pixiefreak/vicious-champions/wp-content/uploads/2018/11/achievement_03.png"
-                                            alt="Achievement01">
+                                                src="http://themes.pixiesquad.com/pixiefreak/vicious-champions/wp-content/uploads/2018/11/achievement_03.png"
+                                                alt="Achievement01">
                                     </a></div>
                                     <div class="owl-item active" style="width: auto; margin-right: 40px;"><a
-                                        target="_blank">
+                                            target="_blank">
                                         <img
-                                            src="http://themes.pixiesquad.com/pixiefreak/vicious-champions/wp-content/uploads/2018/11/achievement_02.png"
-                                            alt="Achievement02">
+                                                src="http://themes.pixiesquad.com/pixiefreak/vicious-champions/wp-content/uploads/2018/11/achievement_02.png"
+                                                alt="Achievement02">
                                     </a></div>
                                     <div class="owl-item active" style="width: auto; margin-right: 40px;"><a
-                                        target="_blank">
+                                            target="_blank">
                                         <img
-                                            src="http://themes.pixiesquad.com/pixiefreak/vicious-champions/wp-content/uploads/2018/11/achievement_01.png"
-                                            alt="Achievement03">
+                                                src="http://themes.pixiesquad.com/pixiefreak/vicious-champions/wp-content/uploads/2018/11/achievement_01.png"
+                                                alt="Achievement03">
                                     </a></div>
                                 </div>
                             </div>
@@ -196,8 +194,8 @@
             <li class="card">
                 <figure>
                     <img
-                        src="https://cdn.esportsmatrix.com/dota2/Content/images/uploaded/player/6496a3c4-31e4-42ea-91e0-fe012b034d92.png"
-                        alt="Ultramenix">
+                            src="https://cdn.esportsmatrix.com/dota2/Content/images/uploaded/player/6496a3c4-31e4-42ea-91e0-fe012b034d92.png"
+                            alt="Ultramenix">
                 </figure>
             </li>
             <li class="card">

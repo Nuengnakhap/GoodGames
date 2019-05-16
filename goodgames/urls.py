@@ -1,6 +1,7 @@
 from django.urls import path
 
 from goodgames import views
+from django.conf.urls import handler404
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -17,4 +18,7 @@ urlpatterns = [
     path('team/<int:team_id>/manage/', views.manage_team, name='manage_team'),
     path('manage_player/', views.manage_player, name='manage_player'),
     path('team/<int:team_id>/match/<int:match_id>/', views.notice_result, name='notice_result'),
+    path('404/', views.error404, name='error'),
 ]
+
+handler404 = views.error404

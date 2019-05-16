@@ -126,10 +126,11 @@
                     <div class="col-2 right mr-2">
                         <button id="showRule" class="btn-default" style="width: 150px">RULE</button>
                     </div>
-                    <div class="col-3 right">
-                        <a href="#" class="btn-default">Join Tournament</a>
-                    </div>
-
+                    {% if can_join %}
+                        <div class="col-3 right">
+                            <a onclick="joinTournament()" class="btn-default" style="color: white">Join Tournament</a>
+                        </div>
+                    {% endif %}
                 </article>
 
                 <article class="bottom">
@@ -208,6 +209,10 @@
             <!-- Default form login -->
         </div>
     {% endfor %}
+    <form style="display: none" id="hiddenForm" method="post" onsubmit="event.preventDefault();">
+        {% csrf_token %}
+        <input type="hidden" name="user">
+    </form>
 
 
 
@@ -294,6 +299,28 @@
         ;
     }
 
+</script>
+<script>
+    function joinTournament() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to join this tournament",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, join it!'
+        }).then((result) => {
+            if (result.value) {
+                document.getElementById('hiddenForm').submit();
+                Swal.fire(
+                    'Joined!',
+                    'Wait for tournament bracket.',
+                    'success'
+                )
+            }
+        })
+    }
 </script>
 </body>
 

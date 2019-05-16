@@ -98,7 +98,7 @@
                 {% for tournament in tournaments %}
                     <li class="match-box">
                         <div class="box-title">
-                            <span>{{ tournament.name }}</span>
+                            <span>{{ tournament }}</span>
                             <span class="date"></span>
                         </div>
                         <div class="match-details">
@@ -109,10 +109,10 @@
                                         <div id="decoration2"></div>
                                         <div id="decoration3"></div>
                                         {% for rank in ranks %}
-                                            {% if rank.TournamentName == tournament.name %}
+                                            {% if rank.tournament__name == tournament.name %}
                                                 <li class="ranking-li">
                                                     <img style="margin-left: 20px" class="ranking-img" src="https://lh6.googleusercontent.com/-566ZpvrYxRo/AAAAAAAAAAI/AAAAAAAAAAA/kZk-O1q__A0/s128-c-k/photo.jpg"/>
-                                                    <h2 class="ranking">{{ rank.TeamName|truncatechars:20 }}<span class="number">Wins : {{ rank.Wins }}</span>
+                                                    <h2 class="ranking">{{ rank.winner__name|truncatechars:20 }}<span class="number">Wins : {{ rank.wins }}</span>
                                                     </h2>
                                                 </li>
                                             {% endif %}

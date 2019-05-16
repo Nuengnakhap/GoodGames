@@ -240,10 +240,13 @@
                         <form method="post" id="playerForm">
                         {% csrf_token %}
                             {% for player in players_join %}
-                                <input id="{{ player }}" style="display: none" type="checkbox" name="{{ player }}" value="{{ player }}">
+                                <input id="{{ player.username }}" style="display: none" type="checkbox" name="{{ player.username }}" value="{{ player.username }}">
+                            {% endfor %}
+                            {% for player in players_join %}
+                                <input id="delete-{{ player.username }}" style="display: none" type="checkbox" name="delete-{{ player.username }}" value="{{ player.username }}">
                             {% endfor %}
                             {% for player in players_team %}
-                                <input id="delete-{{ player }}" style="display: none" type="checkbox" name="delete-{{ player }}" value="{{ player }}">
+                                <input id="del-team-{{ player.username }}" style="display: none" type="checkbox" name="del-team-{{ player.username }}" value="{{ player.username }}">
                             {% endfor %}
                         </form>
                         <button type="button" class="btn btn-primary" onclick="submitForm()">Save changes</button>
@@ -466,6 +469,7 @@
     $('.todolist').on('click', '.remove-item', function () {
         var doneItem = $(this).parent().text();
         $('#delete-'+doneItem).prop('checked', true);
+        $('#del-team-'+doneItem).prop('checked', true);
         removeItem(this);
     });
 

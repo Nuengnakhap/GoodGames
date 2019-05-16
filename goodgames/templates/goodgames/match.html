@@ -92,15 +92,6 @@
                 <span>This is live update of matches our teams playing right now</span>
             </div>
         </div>
-
-        <ul class="tab-nav">
-            <li class="active">
-                <a href="#upcoming-match" class="btn-default" data-toggle="tab">
-                    Upcoming </a>
-            </li>
-
-        </ul>
-
         <div class="tab-content">
             <ul class="match-list active" id="upcoming-match">
                 {% for match in matchs %}
@@ -112,12 +103,12 @@
                         <div class="match-details">
                             <div class="team-box">
                                 <a href="">
-                                    <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/team_logo_02.png"
-                                         alt="Fnatic eSports">
+                                    <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/team_logo_02.png" alt="Fnatic eSports">
                                 </a>
                                 <div class="team-details">
                                     <div class="team-name">
-                                        <a class="{% if match.winner_id == match.my_team_id %}green{% else %}red{% endif %}" href="{% url 'team_info' match.my_team_id %}">{{ match.my_team }}</a>
+                                        <a class="{% if match.winner_id == match.my_team_id %}green{% else %}red{% endif %}"
+                                           href="{% url 'team_info' match.my_team_id %}">{{ match.my_team }}</a>
                                     </div>
                                 </div>
                             </div>
@@ -141,215 +132,94 @@
                         </div>
 
                         <span class="game-name">{{ match.type|upper }}</span>
-                        {% if perms.goodgames.change_team %}
-                            <a href="{% url 'notice_result' match.my_team_id match.id %}" class="btn-default" style="color: white">NOTICE RESULT</a>
+                        {% if owner %}
+                            <div class="d-flex justify-content-center">
+                                <a href="{% url 'notice_result' match.my_team_id match.id %}" class="btn-default" style="color: white;">NOTICE RESULT</a>
+                            </div>
                         {% endif %}
-
                     </li>
                 {% endfor %}
-                
 
-                <li class="match-box">
-                    <div class="box-title">
-            <span>
-            Manila masters Toronto 4v4                                        </span>
-                        <span class="date">
-              02 Oct 2018 05:43 PM
-                            </a>
-            </span>
-                    </div>
-
-                    <div class="match-details">
-                        <div class="team-box">
-                            <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/team/team-flawed-bot">
-                                <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/team_logo_01.png"
-                                     alt="Team Flawed Bot">
-                            </a>
-
-                            <div class="team-details">
-                                <div class="team-name">
-                                    <span>Team Flawed Bot</span>
-                                </div>
-
-                                <ul class="members">
-
-                                    <li>
-                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/ultramenix">
-                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/img.jpg"
-                                                 alt="ultramenix">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/stamenix">
-                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/player_852.jpg"
-                                                 alt="stamenix">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/george">
-                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/player_89.jpg"
-                                                 alt="george">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/m89s">
-                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/player_9111.jpg"
-                                                 alt="m89s">
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="col">
-              <span class="result">
-              VS                                                                                    </span>
-                        </div>
-
-                        <div class="team-box">
-                            <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/team/fortuna-esports">
-                                <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/team_logo_05.png"
-                                     alt="Fortuna eSports">
-                            </a>
-
-                            <div>
-                                <div class="team-name">
-                                    <span>Fortuna eSports</span>
-                                </div>
-
-                                <ul class="members">
-
-                                    <li>
-                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/ultramenix">
-                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/img.jpg"
-                                                 alt="ultramenix">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/stamenix">
-                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/player_852.jpg"
-                                                 alt="stamenix">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/george">
-                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/player_89.jpg"
-                                                 alt="george">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/m89s">
-                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/player_9111.jpg"
-                                                 alt="m89s">
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <span class="game-name">Fortnite</span>
-                </li>
-                <li class="match-box">
-                    <div class="box-title">
-            <span>
-            Manila masters Toronto 4v4                                        </span>
-                        <span class="date">
-              02 Oct 2018 05:54 PM                                            
-            </span>
-                    </div>
-
-                    <div class="match-details">
-                        <div class="team-box">
-                            <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/team/invictus-gaming">
-                                <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/team_logo_04.png"
-                                     alt="Invictus Gaming">
-                            </a>
-
-                            <div class="team-details">
-                                <div class="team-name">
-                                    <span>Invictus Gaming</span>
-                                </div>
-
-                                <ul class="members">
-
-                                    <li>
-                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/ultramenix">
-                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/img.jpg"
-                                                 alt="ultramenix">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/stamenix">
-                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/player_852.jpg"
-                                                 alt="stamenix">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/george">
-                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/player_89.jpg"
-                                                 alt="george">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/m89s">
-                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/player_9111.jpg"
-                                                 alt="m89s">
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="col">
-              <span class="result">
-              VS                                                                                    </span>
-                        </div>
-
-                        <div class="team-box">
-                            <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/team/fnatic-esports">
-                                <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/team_logo_02.png"
-                                     alt="Fnatic eSports">
-                            </a>
-
-                            <div>
-                                <div class="team-name">
-                                    <span>Fnatic eSports</span>
-                                </div>
-
-                                <ul class="members">
-
-                                    <li>
-                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/ultramenix">
-                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/img.jpg"
-                                                 alt="ultramenix">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/stamenix">
-                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/player_852.jpg"
-                                                 alt="stamenix">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/george">
-                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/player_89.jpg"
-                                                 alt="george">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/m89s">
-                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/player_9111.jpg"
-                                                 alt="m89s">
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <span class="game-name">Fortnite</span>
-                </li>
+{#                <li class="match-box">#}
+{#                    <div class="box-title">#}
+{#                        <span>Manila masters Toronto 4v4</span>#}
+{#                        <span class="date">02 Oct 2018 05:43 PM</span>#}
+{#                    </div>#}
+{##}
+{#                    <div class="match-details">#}
+{#                        <div class="team-box">#}
+{#                            <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/team/team-flawed-bot">#}
+{#                                <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/team_logo_01.png" alt="Team Flawed Bot">#}
+{#                            </a>#}
+{#                            <div class="team-details">#}
+{#                                <div class="team-name">#}
+{#                                    <span>Team Flawed Bot</span>#}
+{#                                </div>#}
+{#                                <ul class="members">#}
+{#                                    <li>#}
+{#                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/ultramenix">#}
+{#                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/img.jpg" alt="ultramenix">#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                    <li>#}
+{#                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/stamenix">#}
+{#                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/player_852.jpg" alt="stamenix">#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                    <li>#}
+{#                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/george">#}
+{#                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/player_89.jpg" alt="george">#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                    <li>#}
+{#                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/m89s">#}
+{#                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/player_9111.jpg" alt="m89s">#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                </ul>#}
+{#                            </div>#}
+{#                        </div>#}
+{##}
+{#                        <div class="col">#}
+{#                            <span class="result">VS</span>#}
+{#                        </div>#}
+{##}
+{#                        <div class="team-box">#}
+{#                            <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/team/fortuna-esports">#}
+{#                                <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/team_logo_05.png" alt="Fortuna eSports">#}
+{#                            </a>#}
+{#                            <div>#}
+{#                                <div class="team-name">#}
+{#                                    <span>Fortuna eSports</span>#}
+{#                                </div>#}
+{#                                <ul class="members">#}
+{#                                    <li>#}
+{#                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/ultramenix">#}
+{#                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/img.jpg" alt="ultramenix">#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                    <li>#}
+{#                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/stamenix">#}
+{#                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/player_852.jpg" alt="stamenix">#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                    <li>#}
+{#                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/george">#}
+{#                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/player_89.jpg" alt="george">#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                    <li>#}
+{#                                        <a href="http://themes.pixiesquad.com/pixiefreak/vicious-champions/player/m89s">#}
+{#                                            <img src="http://themes.pixiesquad.com/pixiefreak/twisting-nether/wp-content/uploads/2018/10/player_9111.jpg" alt="m89s">#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                </ul>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{##}
+{#                    <span class="game-name">Fortnite</span>#}
+{#                </li>#}
             </ul>
 
         </div>
