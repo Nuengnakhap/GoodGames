@@ -1,19 +1,18 @@
+import json
+import random
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.core.files.storage import FileSystemStorage
-from django.db.models import Count
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
 from django.contrib.auth.models import Group
-
+from django.db.models import Count
+from django.shortcuts import render, redirect
 # Create your views here.
-from django.template import loader, Context
+from django.utils import timezone
 
-from goodgames.forms import RegistrationForm, UserAdminCreationForm, CreateTeamForm, ManageTeamForm, ManagePlayerForm, \
+from goodgames.components import power_of_two
+from goodgames.forms import RegistrationForm, CreateTeamForm, ManageTeamForm, ManagePlayerForm, \
     NoticeForm
-from django.contrib import messages
-
-from goodgames.models import Tournament, Team, Match, Player
+from goodgames.models import Tournament, Team, Match, Player, Organizer
 
 
 def error404(request):
@@ -70,6 +69,26 @@ def myLogout(request):
     return redirect('index')
 
 
+@login_required
+def manage_player(request):
+    context = {}
+    current_user = request.user
+    if request.method == 'POST':
+        form = ManagePlayerForm(request.POST, instance=current_user)
+        if form.is_valid():
+            form.save()
+            context['success'] = 'Edited Your Information!'
+            # return redirect('manage_player')
+        else:
+            context['error'] = 'Cannot Edit Your Information!'
+    else:
+        form = ManagePlayerForm(instance=current_user)
+    context['form'] = form
+
+    return render(request, 'goodgames/manageplayer.html', context)
+
+
+# -------------------------- TOURNAMENT VIEWS -------------------------- #
 def tournament(request):
     context = {}
     query = '''
@@ -119,16 +138,26 @@ def tournament_info(request, tour_id):
     tour = Tournament.objects.get(id=tour_id)
     user = current_user
 
-    team = ''
+    team = Team.objects.filter(player_create=user)
+    owner = Organizer.objects.filter(username=current_user)
+    match = Tournament.objects.filter(team_join__in=team, team_join__player_create=user).values('team_join__name')
 
-    try:
-        team = Team.objects.get(player_create=user)
+    if match.exists():
+        context['joined'] = True
+    else:
+        context['joined'] = False
+    if team.exists():
         context['can_join'] = True
-    except Team.DoesNotExist:
+    else:
         context['can_join'] = False
+    if owner.exists():
+        context['owner'] = True
+    else:
+        context['owner'] = False
 
     if request.method == 'POST':
-        tour.team_join.add(team)
+        for i in team:
+            tour.team_join.add(i)
 
     try:
         # cmd = Tournament.objects.raw(query)
@@ -146,6 +175,113 @@ def tournament_info(request, tour_id):
     return render(request, 'goodgames/tournamentinfo.html', context)
 
 
+@login_required
+def tournament_bracket(request, tour_id):
+    current_user = request.user
+    context = {}
+
+    match = Match.objects.filter(tournament_id=tour_id)
+    owner = Organizer.objects.filter(username=current_user).distinct()
+
+    if match.exists():
+        context['built'] = True
+        mt = match.values('team__matchs__team__name').distinct()
+        match = [{'team': x['team__matchs__team__name']} for x in mt]
+        tmp = []
+        teams = []
+        for i in range(len(match)):
+            tmp.append(match[i]['team'])
+
+        team = Tournament.objects.filter(id=tour_id).values('team_join__name')
+
+        for i in range(0, len(tmp) - 1, 2):
+            teams.append([tmp[i], tmp[i + 1]])
+
+        # print(teams)
+
+        if team.count() != mt.count():
+            team = [{'team': x['team_join__name']} for x in team]
+
+            team_all = []
+            for i in range(len(team)):
+                team_all.append(team[i]['team'])
+
+            num_team = power_of_two(len(team_all) // 2)
+
+            for i in range(len(team)):
+                if team_all[i] not in tmp:
+                    teams.append([team_all[i], None])
+
+            if num_team > (len(team_all) // 2):
+                for i in range((len(team_all) + 1) // 2, num_team):
+                    teams.append([None, None])
+
+            if len(team_all) % 2 != 0:
+                num_team = power_of_two((len(team_all) + 1) // 2)
+
+            if num_team > (len(team_all) // 2):
+                for i in range((len(team_all) + 1) // 2, num_team):
+                    teams.append([None, None])
+
+            # print(teams)
+        data = {'teams': teams, 'results': []}
+        context['data'] = json.dumps(data)
+
+    else:
+        context['built'] = False
+        team = Tournament.objects.filter(id=tour_id).values('team_join__name')
+        team = [{'team': x['team_join__name']} for x in team]
+        team_all = []
+        teams = []
+
+        for i in range(len(team)):
+            team_all.append(team[i]['team'])
+        random.shuffle(team_all)
+
+        num_team = power_of_two(len(team_all) // 2)
+
+        for i in range(0, len(team_all) - 1, 2):
+            teams.append([team_all[i], team_all[i + 1]])
+
+        if len(team_all) % 2 != 0:
+            teams.append([team_all[len(team_all) - 1], None])
+            num_team = power_of_two((len(team_all) + 1) // 2)
+
+        if num_team > (len(team_all) // 2):
+            for i in range((len(team_all) + 1) // 2, num_team):
+                teams.append([None, None])
+
+        data = {'teams': teams, 'results': []}
+        context['data'] = json.dumps(data)
+
+    if request.method == 'POST':
+        count = 0
+        iterpost = iter(request.POST)
+        next(iterpost)
+        team = []
+        tmp = []
+        for key in iterpost:
+            value = request.POST[key]
+            tmp.append(value)
+            count += 1
+            if count % 2 == 0 and count != 0:
+                match = Match(start_date=timezone.now(), end_date=timezone.now() + timezone.timedelta(days=7),
+                              tournament_id=tour_id)
+                match.save()
+                t1 = Team.objects.get(name=tmp[0])
+                t2 = Team.objects.get(name=tmp[1])
+                match.team.add(t1.id, t2.id)
+                team.append(tmp)
+                tmp = []
+        return redirect('tournament_info', tour_id)
+
+    if owner.exists():
+        return render(request, 'goodgames/tournamentbracket.html', context)
+    else:
+        return redirect('error')
+
+
+# -------------------------- TEAM VIEWS -------------------------- #
 @login_required
 def team_info(request, team_id):
     context = {}
@@ -269,30 +405,6 @@ def team(request):
     return render(request, 'goodgames/allteam.html', context)
 
 
-def ranking(request):
-    context = {}
-
-    # query = '''
-    #     SELECT team.id, t.name as 'TournamentName', team.name as 'TeamName', COUNT(winner_id) as 'Wins'
-    #     from goodgames_match m
-    #     JOIN goodgames_tournament t
-    #     on m.tournament_id = t.id
-    #     JOIN goodgames_team team
-    #     on winner_id = team.id
-    #     GROUP by tournament_id, winner_id
-    #     '''
-    ranks = Match.objects.values('tournament__name', 'winner__name').annotate(wins=Count('winner')).order_by('-tournament__created_at', '-wins')
-
-    try:
-        # rank = Tournament.objects.raw(query)
-        context['tournaments'] = Tournament.objects.filter(name__in=[f['tournament__name'] for f in ranks])
-        context['ranks'] = ranks
-    except:
-        context['ranks'] = None
-        context['tournaments'] = None
-    return render(request, 'goodgames/ranking.html', context)
-
-
 @login_required
 def manage_team(request, team_id):
     context = {}
@@ -333,26 +445,43 @@ def manage_team(request, team_id):
             context['players_join'] = None
 
     context['form'] = form
-    return render(request, 'goodgames/ManageTeamInfo.html', context)
 
-
-@login_required
-def manage_player(request):
-    context = {}
-    current_user = request.user
-    if request.method == 'POST':
-        form = ManagePlayerForm(request.POST, instance=current_user)
-        if form.is_valid():
-            form.save()
-            context['success'] = 'Edited Your Information!'
-            # return redirect('manage_player')
-        else:
-            context['error'] = 'Cannot Edit Your Information!'
+    if team_info.player_create == request.user:
+        return render(request, 'goodgames/ManageTeamInfo.html', context)
     else:
-        form = ManagePlayerForm(instance=current_user)
-    context['form'] = form
+        return redirect('error')
 
-    return render(request, 'goodgames/manageplayer.html', context)
+
+# -------------------------- OTHER VIEWS -------------------------- #
+def ranking(request):
+    context = {}
+
+    # query = '''
+    #     SELECT team.id, t.name as 'TournamentName', team.name as 'TeamName', COUNT(winner_id) as 'Wins'
+    #     from goodgames_match m
+    #     JOIN goodgames_tournament t
+    #     on m.tournament_id = t.id
+    #     JOIN goodgames_team team
+    #     on winner_id = team.id
+    #     GROUP by tournament_id, winner_id
+    #     '''
+    ranks = Match.objects.values('tournament__name', 'winner__name').annotate(wins=Count('winner')).order_by('-tournament__created_at', '-wins')
+
+    if ranks[0]['winner__name'] == None:
+        context['ranks'] = None
+        context['tournaments'] = None
+    else:
+        context['tournaments'] = Tournament.objects.filter(name__in=[f['tournament__name'] for f in ranks])
+        context['ranks'] = ranks
+
+    # try:
+    #     # rank = Tournament.objects.raw(query)
+    #     context['tournaments'] = Tournament.objects.filter(name__in=[f['tournament__name'] for f in ranks])
+    #     context['ranks'] = ranks
+    # except:
+    #     context['ranks'] = None
+    #     context['tournaments'] = None
+    return render(request, 'goodgames/ranking.html', context)
 
 
 @login_required
@@ -393,4 +522,8 @@ def notice_result(request, team_id, match_id):
         context['match_id'] = None
         context['match'] = None
 
-    return render(request, 'goodgames/noticeresult.html', context)
+    team = Team.objects.get(id=team_id)
+    if team.player_create == request.user:
+        return render(request, 'goodgames/noticeresult.html', context)
+    else:
+        return redirect('error')

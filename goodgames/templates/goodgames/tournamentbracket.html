@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <title>Tournament Bracket Generator</title>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'goodgames/css/jquery.bracket.min.css' %}"/>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'goodgames/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="{% static 'goodgames/css/mdb.min.css' %}" rel="stylesheet">
+    <!-- Your custom styles (optional) -->
+    <link href="{% static 'goodgames/css/style.css' %}" rel="stylesheet">
+    <!-- JQuery -->
+    <script type="text/javascript" src="{% static 'goodgames/js/jquery-3.4.0.min.js' %}"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="{% static 'goodgames/js/popper.min.js' %}"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="{% static 'goodgames/js/bootstrap.min.js' %}"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="{% static 'goodgames/js/mdb.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            var demos = ['save']
+            $.each(demos, function (i, d) {
+                var demo = $('div#' + d)
+                $('<div class="demo"></div>').appendTo(demo)
+            })
+        })
+    </script>
+</head>
+<body style="background-color: currentColor">
+<!--Navbar -->
+<nav class="mb-3 navbar navbar-expand-lg navbar-dark secondary-color1 lighten-1">
+    <a class="navbar-brand" href="">GorillaBC E-Sport</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-555"
+            aria-controls="navbarSupportedContent-555" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent-555">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'index' %}">Home
+                    <span class="sr-only">(current)</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'tournament' %}">Tournament</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'ranking' %}">Ranking</a>
+            </li>
+
+        </ul>
+        <ul class="navbar-nav ml-auto nav-flex-icons">
+            <!--<li class="nav-item">
+              <a class="nav-link waves-effect waves-light">1
+                <i class="fas fa-envelope"></i>
+              </a>
+            </li>-->
+            <!--Register -->
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a href="{% url 'register' %}" class="nav-link">Register</a>
+                </li>
+                <!--login -->
+                <li class="nav-item">
+                    <a href="{% url 'login' %}" class="nav-link">Login</a>
+                </li>
+            {% endif %}
+
+            <li class="nav-item avatar dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-55" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    <img style="width: 30%" src="https://mdbootstrap.com/img/Photos/Avatars/avatar-2.jpg"
+                         class="rounded-circle z-depth-0"
+                         alt="avatar image">
+                </a>
+                {% if user.is_authenticated %}
+                    <div class="dropdown-menu dropdown-menu-right dropdown-secondary"
+                         aria-labelledby="navbarDropdownMenuLink-55">
+                        <a class="dropdown-item" href="{% url 'create_team' %}">Create Team</a>
+                        <a class="dropdown-item" href="{% url 'team' %}">Join Team</a>
+                        <a class="dropdown-item" href="{% url 'manage_player' %}">ManagePlayerInformation</a>
+                    </div>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+</nav>
+<!--/.Navbar -->
+<form id="my-form" method="post">
+    {% csrf_token %}
+</form>
+<section class="container-fluid mb-3" style="min-height: 80vh">
+    <div id="main" style="">
+        <div class="d-flex justify-content-center" id="save" style="display: inline-block;"></div>
+        <div class="text-center">
+            <button class="btn btn-success" onclick="sendForm()">SAVE</button>
+        </div>
+    </div>
+</section>
+
+<!-- Site footer -->
+<section class="">
+    <footer class="site-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-md-6">
+                    <h6>About</h6>
+                    <p class="text-justify">Scanfcode.com <i>CODE WANTS TO BE SIMPLE </i> is an initiative to help the
+                        upcoming programmers with the code. Scanfcode focuses on providing the most efficient code or
+                        snippets as the code wants to be simple. We will help programmers build up concepts in different
+                        programming languages that include C, C++, Java, HTML, CSS, Bootstrap, JavaScript, PHP, Android,
+                        SQL and Algorithm.</p>
+                </div>
+
+                <div class="col-xs-6 col-md-3">
+                    <h6>Categories</h6>
+                    <ul class="footer-links">
+                        <li><a href="http://scanfcode.com/category/c-language/">C</a></li>
+                        <li><a href="http://scanfcode.com/category/front-end-development/">UI Design</a></li>
+                        <li><a href="http://scanfcode.com/category/back-end-development/">PHP</a></li>
+                        <li><a href="http://scanfcode.com/category/java-programming-language/">Java</a></li>
+                        <li><a href="http://scanfcode.com/category/android/">Android</a></li>
+                        <li><a href="http://scanfcode.com/category/templates/">Templates</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-xs-6 col-md-3">
+                    <h6>Quick Links</h6>
+                    <ul class="footer-links">
+                        <li><a href="http://scanfcode.com/about/">About Us</a></li>
+                        <li><a href="http://scanfcode.com/contact/">Contact Us</a></li>
+                        <li><a href="http://scanfcode.com/contribute-at-scanfcode/">Contribute</a></li>
+                        <li><a href="http://scanfcode.com/privacy-policy/">Privacy Policy</a></li>
+                        <li><a href="http://scanfcode.com/sitemap/">Sitemap</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                    <p class="copyright-text">Copyright &copy; 2017 All Rights Reserved by
+                        <a href="#">Scanfcode</a>.
+                    </p>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <ul class="social-icons">
+                        <li><a class="facebook" href="#"><i class="fab fa-twitter"></i></a></li>
+                        <li><a class="twitter" href="#"><i class="fab fa-twitter"></i></a></li>
+                        <li><a class="dribbble" href="#"><i class="fab fa-dribbble"></i></a></li>
+                        <li><a class="linkedin" href="#"><i class="fab fa-linkedin"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+</section>
+
+
+{% block extrascript %}
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'goodgames/js/jquery.bracket.min.js' %}"></script>
+    <script type="text/javascript">
+        // https://stackoverflow.com/questions/45668336/two-sided-tournament-bracket
+        // http://www.aropupu.fi/bracket/
+        function shuffle(array) {
+            var currentIndex = array.length, temporaryValue, randomIndex;
+            // While there remain elements to shuffle...
+            while (0 !== currentIndex) {
+                // Pick a remaining element...
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex -= 1;
+                // And swap it with the current element.
+                temporaryValue = array[currentIndex];
+                array[currentIndex] = array[randomIndex];
+                array[randomIndex] = temporaryValue;
+            }
+            return array;
+        }
+
+
+        {#function newTeams() {#}
+        {#    var team = [];#}
+        {#    {% for team in teams %}#}
+        {#        team.push("{{ team.team }}");#}
+        {#    {% endfor %}#}
+        {#    shuffle(team);#}
+        {##}
+        {#    var teams = [];#}
+        {#    while (team.length)#}
+        {#        teams.push(team.splice(0, 2));#}
+        {##}
+        {#    return teams;}#}
+
+        let finalData = {{ data|safe }};
+
+        function edit_fn(container, data, doneCb) {
+            {#var input = $('<input type="text">')#}
+            {#input.val(data ? data.flag + ':' + data.name : '')#}
+            {#container.html(input)#}
+            {#input.focus()#}
+            {#input.blur(function () {#}
+            {#    var inputValue = input.val()#}
+            {#    if (inputValue.length === 0) {#}
+            {#        doneCb(null); // Drop the team and replace with BYE#}
+            {#    } else {#}
+            {#        var flagAndName = inputValue.split(':') // Expects correct input#}
+            {#        doneCb({flag: flagAndName[0], name: flagAndName[1]})#}
+            {#    }})#}
+        }
+
+        function render_fn(container, data, score, state) {
+            switch (state) {
+                case "empty-bye":
+                    container.append("No team")
+                    return;
+                case "empty-tbd":
+                    container.append("Upcoming")
+                    return;
+
+                case "entry-no-score":
+                case "entry-default-win":
+                case "entry-complete":
+                    container.append(data)
+                    return;
+            }
+        }
+
+        $(function () {
+            $('#save').bracket({
+                init: finalData, /* data to initialize the bracket with */
+                skipConsolationRound: true,
+                decorator: {edit: edit_fn, render: render_fn}
+            })
+        });
+
+        $(document).ready(function () {
+            for (let i = 0; i < finalData.teams.length; i++) {
+                if (finalData.teams[i][0] != null && finalData.teams[i][1] != null) {
+                    $("#my-form").append("<input name='" + finalData.teams[i][0] + "' type='hidden' value='" + finalData.teams[i][0] + "'>");
+                    $("#my-form").append("<input name='" + finalData.teams[i][1] + "' type='hidden' value='" + finalData.teams[i][1] + "'>");
+                }
+            }
+        });
+
+        function sendForm() {
+            {% if built %}
+                Swal.fire({
+                    type: 'error',
+                    title: 'You\'ve created the match for this tournament!',
+                    showConfirmButton: false,
+                    timer: 3000
+                }).then(function () {
+                    window.history.back();
+                })
+            {% else %}
+                Swal.fire({
+                    type: 'success',
+                    title: 'You have already created the match for this tournament!',
+                    showConfirmButton: false,
+                    timer: 3000
+                }).then(function () {
+                    document.getElementById("my-form").submit();
+                })
+            {% endif %}
+        }
+    </script>
+{% endblock extrascript %}
+
+</body>
+</html>

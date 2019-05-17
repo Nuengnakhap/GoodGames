@@ -17,7 +17,7 @@ class PlayerAdmin(UserAdmin):
 
     fieldsets = (
         (None, {'fields': ('username', 'email', 'password')}),
-        ('Personal Info', {'fields': ('firstName', 'lastName', 'sex', 'birthday', 'phone1', 'phone2', 'province', 'team')}),
+        ('Personal Info', {'fields': ('firstName', 'lastName', 'sex', 'birthday', 'phone1', 'phone2', 'province')}),
         ('Permissions', {'fields': ('groups', 'user_permissions', 'active', 'admin', 'staff')}),
         ('Important Dates', {'fields': ('last_login',)}),
     )
@@ -33,7 +33,7 @@ class PlayerAdmin(UserAdmin):
 
 
 class OrganizerAdmin(admin.ModelAdmin):
-    list_display = ['id', 'username', 'email', 'firstName', 'lastName']
+    list_display = ['id', 'username']
     list_per_page = 10
 
 

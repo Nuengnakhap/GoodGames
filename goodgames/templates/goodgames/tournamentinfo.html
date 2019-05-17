@@ -123,9 +123,14 @@
 
                     </div>
 
-                    <div class="col-2 right mr-2">
+                    <div class="col-2 right">
                         <button id="showRule" class="btn-default" style="width: 150px">RULE</button>
                     </div>
+                    {% if owner %}
+                        <div class="col-2 right">
+                            <a href="{% url 'tournament_bracket' item.id %}" class="btn-default" style="width: 150px">GENERATOR</a>
+                        </div>
+                    {% endif %}
                     {% if can_join %}
                         <div class="col-3 right">
                             <a onclick="joinTournament()" class="btn-default" style="color: white">Join Tournament</a>
@@ -312,12 +317,20 @@
             confirmButtonText: 'Yes, join it!'
         }).then((result) => {
             if (result.value) {
-                document.getElementById('hiddenForm').submit();
-                Swal.fire(
-                    'Joined!',
-                    'Wait for tournament bracket.',
-                    'success'
-                )
+                {% if joined %}
+                    Swal.fire(
+                        'Oops...',
+                        'You have joined this tournament!',
+                        'error'
+                    )
+                {% else %}
+                    document.getElementById('hiddenForm').submit();
+                    Swal.fire(
+                        'Joined!',
+                        'Wait for tournament bracket.',
+                        'success'
+                    )
+                {% endif %}
             }
         })
     }

@@ -3,7 +3,6 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 
-
 # Create your models here.
 from goodgames.components import path_and_rename, path_and_rename_match, OverwriteStorage
 
@@ -11,23 +10,6 @@ SEX = (
         ('01', 'Male'),
         ('02', 'Female')
     )
-
-
-class Organizer(models.Model):
-    username = models.CharField(max_length=100, unique=True)
-    password = models.CharField(max_length=100)
-    email = models.EmailField(max_length=100)
-    firstName = models.CharField(max_length=100)
-    lastName = models.CharField(max_length=100)
-    type = models.CharField(max_length=2, choices=SEX, default='01')
-    phone1 = models.CharField(max_length=10)
-    phone2 = models.CharField(max_length=10)
-    address = models.CharField(max_length=100)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.username
 
 
 class Categories(models.Model):
@@ -38,7 +20,7 @@ class Categories(models.Model):
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, username, password=None, is_active=True, is_staff=False, is_admin=False):
+    def create_user(self, username, password=None, is_active=True, is_staff=False, is_superuser=False):
         """
         Creates and saves a User with the given email, date of
         birth and password.
@@ -53,7 +35,7 @@ class UserManager(BaseUserManager):
 
         user.set_password(password)
         user.staff = is_staff
-        user.admin = is_admin
+        user.admin = is_superuser
         user.active = is_active
         user.save(using=self._db)
         return user
@@ -79,7 +61,7 @@ class UserManager(BaseUserManager):
         user = self.create_user(
             username,
             password=password,
-            is_admin=True
+            is_superuser=True
         )
         user.save(using=self._db)
         return user
@@ -140,6 +122,13 @@ class Player(AbstractBaseUser, PermissionsMixin):
     def is_active(self):
         "Is the user active?"
         return self.active
+
+
+class Organizer(models.Model):
+    username = models.ForeignKey(Player, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return str(self.username)
 
 
 class Team(models.Model):

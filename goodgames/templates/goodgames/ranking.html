@@ -17,7 +17,7 @@
     <link href="{% static 'goodgames/css/style.css' %}" rel="stylesheet">
 </head>
 
-<body>
+<body style="background-color: #0b0b11;">
 <!--Navbar -->
 <nav class="mb-1 navbar navbar-expand-lg navbar-dark secondary-color1 lighten-1">
     <a class="navbar-brand" href="">GorillaBC E-Sport</a>
@@ -84,7 +84,7 @@
 <!-- Start your project here-->
 
 
-<section class="matches" style="margin-top: -5px;">
+<section class="matches" style="margin-top: -5px; min-height: 70vh">
     <div class="container">
         <div class="section-header center-column col-white">
             <div class="section-title">
@@ -108,7 +108,7 @@
                                         <div id="decoration"></div>
                                         <div id="decoration2"></div>
                                         <div id="decoration3"></div>
-                                        {% for rank in ranks %}
+                                        {% for rank in ranks|slice:":5" %}
                                             {% if rank.tournament__name == tournament.name %}
                                                 <li class="ranking-li">
                                                     <img style="margin-left: 20px" class="ranking-img" src="https://lh6.googleusercontent.com/-566ZpvrYxRo/AAAAAAAAAAI/AAAAAAAAAAA/kZk-O1q__A0/s128-c-k/photo.jpg"/>

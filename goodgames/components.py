@@ -54,3 +54,12 @@ def path_and_rename_match(path):
 
     return wrapper
     # return ''
+
+
+def power_of_two(target):
+    if target > 2:
+        for i in range(1, int(target)):
+            if (2 ** i >= target):
+                return 2 ** i
+    else:
+        return 2
