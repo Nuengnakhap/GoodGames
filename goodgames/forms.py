@@ -1,9 +1,8 @@
 
-from django.contrib.auth.forms import UserCreationForm, ReadOnlyPasswordHashField
-from django.core.exceptions import ValidationError
 from django import forms
+from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from goodgames.models import Player, Team, Match
+from goodgames.models import Player, Team, Match, Tournament, Categories
 
 
 class CreateTeamForm(forms.ModelForm):
@@ -37,7 +36,6 @@ class CreateTeamForm(forms.ModelForm):
         if qs.exists():
             raise forms.ValidationError("team short name is taken")
         return name
-
 
 
 class RegistrationForm(forms.ModelForm):
@@ -189,3 +187,63 @@ class NoticeForm(forms.ModelForm):
             'picture': forms.FileInput(attrs={'class': 'custom-file-input', 'placeholder': 'Enter Your EVIDENCE', 'type': 'file'}),
         }
 
+
+class CreateTournamentForm(forms.ModelForm):
+    categories = forms.ModelChoiceField(queryset=Categories.objects.all(), required=False, widget=forms.Select(attrs={'class': 'input100'}))
+
+    class Meta:
+        model = Tournament
+        fields = [
+            'name',
+            'rule',
+            'prize',
+            'start_date',
+            'end_date',
+            'categories',
+            'description',
+        ]
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'input100', 'placeholder': 'Enter Your Tournament name'}),
+            'rule': forms.Textarea(attrs={'class': 'input100', 'placeholder': 'Enter Your Tournament rules'}),
+            'prize': forms.Textarea(attrs={'class': 'input100', 'placeholder': 'Enter Your Tournament prizes'}),
+            'start_date': forms.DateInput(attrs={'class': 'input100', 'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'class': 'input100', 'type': 'date'}),
+            'description': forms.Textarea(attrs={'class': 'input100', 'placeholder': 'Enter Your Tournament descriptions'}),
+        }
+
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        qs = Tournament.objects.filter(name=name)
+        if qs.exists():
+            raise forms.ValidationError("Tournament name is taken")
+        return name
+
+    # def clean_categories(self):
+    #     category = self.cleaned_data['categories']
+    #     cleaned_data = super().clean()
+    #     new_category = cleaned_data.get('new_category')
+    #     if category == None:
+    #         Categories.objects.create(description=new_category)
+    #     return category
+
+
+class ManageTournamentForm(forms.ModelForm):
+    categories = forms.ModelChoiceField(queryset=Categories.objects.all(), required=False, widget=forms.Select(attrs={'class': 'input100'}))
+
+    class Meta:
+        model = Tournament
+        fields = [
+            'rule',
+            'prize',
+            'start_date',
+            'end_date',
+            'categories',
+            'description',
+        ]
+        widgets = {
+            'rule': forms.Textarea(attrs={'class': 'input100', 'placeholder': 'Enter Your Tournament rules'}),
+            'prize': forms.Textarea(attrs={'class': 'input100', 'placeholder': 'Enter Your Tournament prizes'}),
+            'start_date': forms.DateInput(attrs={'class': 'input100', 'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'class': 'input100', 'type': 'date'}),
+            'description': forms.Textarea(attrs={'class': 'input100', 'placeholder': 'Enter Your Tournament descriptions'}),
+        }

@@ -73,7 +73,7 @@
                          aria-labelledby="navbarDropdownMenuLink-55">
                         <a class="dropdown-item" href="{% url 'create_team' %}">Create Team</a>
                         <a class="dropdown-item" href="{% url 'team' %}">Join Team</a>
-                        <a class="dropdown-item" href="{% url 'manage_player' %}">ManagePlayerInformation</a>
+                        <a class="dropdown-item" href="{% url 'manage_player' %}">Manage Player Information</a>
                     </div>
                 {% endif %}
             </li>
@@ -90,13 +90,12 @@
             <div class="section-title">
                 <h2>Tournaments</h2>
             </div>
-
             <ul>
-                <li class="active">
-                    <a href="#upcoming-tournament" data-toggle="tab">
-                        Upcoming </a>
-                </li>
-
+                {% if owner %}
+                    <li>
+                        <a href="{% url 'create_tournament' %}" class="btn-default">New Tournament</a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
 

@@ -11,8 +11,8 @@ from django.utils import timezone
 
 from goodgames.components import power_of_two
 from goodgames.forms import RegistrationForm, CreateTeamForm, ManageTeamForm, ManagePlayerForm, \
-    NoticeForm
-from goodgames.models import Tournament, Team, Match, Player, Organizer
+    NoticeForm, CreateTournamentForm, ManageTournamentForm
+from goodgames.models import Tournament, Team, Match, Player, Organizer, Categories
 
 
 def error404(request):
@@ -89,6 +89,7 @@ def manage_player(request):
 
 
 # -------------------------- TOURNAMENT VIEWS -------------------------- #
+@login_required
 def tournament(request):
     context = {}
     query = '''
@@ -100,6 +101,11 @@ def tournament(request):
         on m.tournament_id = t.id 
         GROUP by t.id
     '''
+    owner = Organizer.objects.filter(username=request.user)
+    if owner.exists():
+        context['owner'] = True
+    else:
+        context['owner'] = False
     try:
         cmd = Tournament.objects.raw(query)
         context['tournament_list'] = cmd
@@ -281,7 +287,69 @@ def tournament_bracket(request, tour_id):
         return redirect('error')
 
 
+@login_required
+def create_tournament(request):
+    current_user = request.user
+    organizer = Organizer.objects.filter(username=current_user).distinct()
+    if request.method == 'POST':
+        form = CreateTournamentForm(request.POST)
+        if form.is_valid():
+            form.save()
+
+            tournament = Tournament.objects.get(name=form.cleaned_data['name'])
+            tournament.organizer = organizer
+            tournament.save()
+            return redirect('tournament_info', tournament.id)
+        else:
+            Categories.objects.create(description=form.data['new_type'])
+    else:
+        form = CreateTournamentForm()
+    context = {'form': form}
+    if organizer.exists():
+        return render(request, 'goodgames/createtournament.html', context)
+    else:
+        return redirect('error')
+
+
+@login_required
+def manage_tournament(request, tour_id):
+    context = {}
+    current_user = request.user
+    tour = Tournament.objects.get(id=tour_id)
+    context['tour_id'] = tour_id
+    context['error'] = ''
+    if request.method == 'POST':
+        form = ManageTournamentForm(request.POST, instance=tour)
+        if form.is_valid():
+            form.save()
+            context['success'] = 'Edited Your Information!'
+            # return redirect('manage_player')
+        else:
+            Categories.objects.create(description=form.data['new_type'])
+            form = ManageTournamentForm(instance=tour)
+    else:
+        form = ManageTournamentForm(instance=tour)
+    context['form'] = form
+
+    if tour.organizer.username == current_user:
+        return render(request, 'goodgames/managetournament.html', context)
+    else:
+        return redirect('error')
+
+
 # -------------------------- TEAM VIEWS -------------------------- #
+def team(request):
+    context = {}
+
+    try:
+        cmd = Team.objects.all()
+        context['teams'] = cmd
+
+    except:
+        context['teams'] = None
+    return render(request, 'goodgames/allteam.html', context)
+
+
 @login_required
 def team_info(request, team_id):
     context = {}

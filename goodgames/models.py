@@ -149,14 +149,14 @@ class Team(models.Model):
 
 class Tournament(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    rule = models.TextField()
-    prize = models.TextField()
+    rule = models.TextField(null=True)
+    prize = models.TextField(null=True)
     start_date = models.DateField()
     end_date = models.DateField()
-    description = models.TextField()
+    description = models.TextField(null=True)
     team_join = models.ManyToManyField(Team, related_name='team_join')
-    categories = models.ForeignKey(Categories, on_delete=models.PROTECT)
-    organizer = models.ForeignKey(Organizer, on_delete=models.PROTECT)
+    categories = models.ForeignKey(Categories, on_delete=models.PROTECT, null=True)
+    organizer = models.ForeignKey(Organizer, on_delete=models.PROTECT, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
